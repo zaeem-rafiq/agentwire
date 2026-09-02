@@ -1,0 +1,1011 @@
+[
+  {
+    "id": "mcp-spec",
+    "name": "Model Context Protocol specification",
+    "kind": "spec",
+    "repo_url": "https://github.com/modelcontextprotocol/modelcontextprotocol",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/docs/specification/2026-07-28/changelog.mdx",
+        "format": "markdown",
+        "note": "Key Changes for the latest released protocol revision (2026-07-28). Bump the path when a new revision ships; see llms.txt below."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/docs/specification/draft/changelog.mdx",
+        "format": "markdown",
+        "note": "Accumulates unreleased changes for the next revision."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/draft/schema.json",
+        "format": "json",
+        "note": "Draft JSON schema; diffs show upcoming wire-format changes."
+      },
+      {
+        "url": "https://modelcontextprotocol.io/llms.txt",
+        "format": "text",
+        "note": "Lists every spec revision; diff to detect a new revision directory."
+      }
+    ],
+    "github_stars": 9100
+  },
+  {
+    "id": "mcp-registry",
+    "name": "Official MCP Registry",
+    "kind": "spec",
+    "repo_url": "https://github.com/modelcontextprotocol/registry",
+    "watch": [
+      {
+        "url": "https://registry.modelcontextprotocol.io/v0/servers",
+        "format": "json",
+        "note": "Public list endpoint (paginated, cursor in metadata). Also served at /v0.1/servers."
+      },
+      {
+        "url": "https://registry.modelcontextprotocol.io/openapi.yaml",
+        "format": "yaml",
+        "note": "Registry API surface."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/modelcontextprotocol/registry/main/docs/reference/api/official-registry-api.md",
+        "format": "markdown"
+      }
+    ],
+    "github_stars": 6900
+  },
+  {
+    "id": "mcp-typescript-sdk",
+    "name": "MCP TypeScript SDK",
+    "kind": "spec",
+    "repo_url": "https://github.com/modelcontextprotocol/typescript-sdk",
+    "watch": [
+      {
+        "url": "https://registry.npmjs.org/@modelcontextprotocol/sdk",
+        "format": "json",
+        "note": "dist-tags.latest + time map."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/package.json",
+        "format": "json"
+      }
+    ]
+  },
+  {
+    "id": "mcp-reference-servers",
+    "name": "MCP reference servers (monorepo)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/modelcontextprotocol/servers",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/modelcontextprotocol/servers/main/README.md",
+        "format": "markdown",
+        "note": "Lists active reference servers; archived ones moved to modelcontextprotocol/servers-archived."
+      }
+    ],
+    "github_stars": 90000
+  },
+  {
+    "id": "mcp-server-filesystem",
+    "name": "Filesystem (reference)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/modelcontextprotocol/servers/main/src/filesystem/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/modelcontextprotocol/servers/main/src/filesystem/README.md",
+        "format": "markdown",
+        "note": "Tool list in README."
+      },
+      {
+        "url": "https://registry.npmjs.org/@modelcontextprotocol/server-filesystem",
+        "format": "json"
+      }
+    ],
+    "npm_package": "@modelcontextprotocol/server-filesystem",
+    "npm_weekly_downloads": 668809
+  },
+  {
+    "id": "mcp-server-memory",
+    "name": "Memory (reference)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/memory",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/modelcontextprotocol/servers/main/src/memory/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://registry.npmjs.org/@modelcontextprotocol/server-memory",
+        "format": "json"
+      }
+    ],
+    "npm_package": "@modelcontextprotocol/server-memory",
+    "npm_weekly_downloads": 73646
+  },
+  {
+    "id": "mcp-server-sequential-thinking",
+    "name": "Sequential Thinking (reference)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/modelcontextprotocol/servers/main/src/sequentialthinking/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://registry.npmjs.org/@modelcontextprotocol/server-sequential-thinking",
+        "format": "json"
+      }
+    ],
+    "npm_package": "@modelcontextprotocol/server-sequential-thinking",
+    "npm_weekly_downloads": 102549
+  },
+  {
+    "id": "mcp-server-everything",
+    "name": "Everything (reference test server)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/everything",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/modelcontextprotocol/servers/main/src/everything/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://registry.npmjs.org/@modelcontextprotocol/server-everything",
+        "format": "json"
+      }
+    ],
+    "npm_package": "@modelcontextprotocol/server-everything",
+    "npm_weekly_downloads": 274866
+  },
+  {
+    "id": "mcp-server-fetch",
+    "name": "Fetch (reference, Python)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/fetch",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/modelcontextprotocol/servers/main/src/fetch/pyproject.toml",
+        "format": "toml"
+      },
+      {
+        "url": "https://pypi.org/pypi/mcp-server-fetch/json",
+        "format": "json"
+      }
+    ],
+    "pypi_package": "mcp-server-fetch"
+  },
+  {
+    "id": "mcp-server-git",
+    "name": "Git (reference, Python)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/modelcontextprotocol/servers/tree/main/src/git",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/modelcontextprotocol/servers/main/src/git/pyproject.toml",
+        "format": "toml"
+      },
+      {
+        "url": "https://pypi.org/pypi/mcp-server-git/json",
+        "format": "json"
+      }
+    ],
+    "pypi_package": "mcp-server-git"
+  },
+  {
+    "id": "context7",
+    "name": "Context7 (Upstash)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/upstash/context7",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/upstash/context7/master/packages/mcp/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/upstash/context7/master/README.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://registry.npmjs.org/@upstash/context7-mcp",
+        "format": "json"
+      }
+    ],
+    "github_stars": 61400,
+    "npm_package": "@upstash/context7-mcp",
+    "npm_weekly_downloads": 879513
+  },
+  {
+    "id": "chrome-devtools-mcp",
+    "name": "Chrome DevTools MCP (Google)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/ChromeDevTools/chrome-devtools-mcp/main/CHANGELOG.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/ChromeDevTools/chrome-devtools-mcp/main/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/ChromeDevTools/chrome-devtools-mcp/main/README.md",
+        "format": "markdown",
+        "note": "Tool reference in README."
+      },
+      {
+        "url": "https://registry.npmjs.org/chrome-devtools-mcp",
+        "format": "json"
+      }
+    ],
+    "github_stars": 49300,
+    "npm_package": "chrome-devtools-mcp",
+    "npm_weekly_downloads": 3288165
+  },
+  {
+    "id": "playwright-mcp",
+    "name": "Playwright MCP (Microsoft)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/microsoft/playwright-mcp",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/microsoft/playwright-mcp/main/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/microsoft/playwright-mcp/main/README.md",
+        "format": "markdown",
+        "note": "Full tool list with parameters in README."
+      },
+      {
+        "url": "https://registry.npmjs.org/@playwright/mcp",
+        "format": "json"
+      }
+    ],
+    "github_stars": 35500,
+    "npm_package": "@playwright/mcp",
+    "npm_weekly_downloads": 5881527
+  },
+  {
+    "id": "github-mcp-server",
+    "name": "GitHub MCP Server (official)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/github/github-mcp-server",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/github/github-mcp-server/main/README.md",
+        "format": "markdown",
+        "note": "Toolsets + full tool list in README; Go binary, no npm package."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/github/github-mcp-server/main/docs/remote-server.md",
+        "format": "markdown",
+        "note": "Remote (hosted) server docs."
+      }
+    ],
+    "github_stars": 32200,
+    "remote_endpoint": "https://api.githubcopilot.com/mcp/"
+  },
+  {
+    "id": "serena",
+    "name": "Serena (coding agent toolkit)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/oraios/serena",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/oraios/serena/main/CHANGELOG.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/oraios/serena/main/pyproject.toml",
+        "format": "toml"
+      }
+    ],
+    "github_stars": 27900
+  },
+  {
+    "id": "markitdown-mcp",
+    "name": "MarkItDown MCP (Microsoft)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/microsoft/markitdown/tree/main/packages/markitdown-mcp",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/microsoft/markitdown/main/packages/markitdown-mcp/pyproject.toml",
+        "format": "toml"
+      },
+      {
+        "url": "https://pypi.org/pypi/markitdown-mcp/json",
+        "format": "json"
+      }
+    ],
+    "github_stars": 177200,
+    "pypi_package": "markitdown-mcp",
+    "note": "Star count is for the whole markitdown repo."
+  },
+  {
+    "id": "figma-context-mcp",
+    "name": "Framelink Figma MCP (community)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/GLips/Figma-Context-MCP",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/GLips/Figma-Context-MCP/main/CHANGELOG.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/GLips/Figma-Context-MCP/main/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://registry.npmjs.org/figma-developer-mcp",
+        "format": "json"
+      }
+    ],
+    "github_stars": 15600,
+    "npm_package": "figma-developer-mcp",
+    "npm_weekly_downloads": 81586
+  },
+  {
+    "id": "figma-official-mcp",
+    "name": "Figma MCP Server (official, remote)",
+    "kind": "mcp_server",
+    "repo_url": "https://developers.figma.com/docs/figma-mcp-server/",
+    "watch": [
+      {
+        "url": "https://developers.figma.com/docs/figma-mcp-server/tools-and-prompts/",
+        "format": "html",
+        "note": "Official tool reference. HTML only (no .md variant); strip markup before diffing."
+      },
+      {
+        "url": "https://developers.figma.com/llms.txt",
+        "format": "text",
+        "note": "Docs index; new MCP pages appear here."
+      }
+    ],
+    "remote_endpoint": "https://mcp.figma.com/mcp",
+    "note": "No public source repo; no dedicated changelog page found."
+  },
+  {
+    "id": "aws-mcp",
+    "name": "AWS MCP Servers (awslabs)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/awslabs/mcp",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/awslabs/mcp/main/README.md",
+        "format": "markdown",
+        "note": "Catalog of ~60 AWS servers."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/awslabs/mcp/main/src/aws-documentation-mcp-server/CHANGELOG.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://pypi.org/pypi/awslabs.aws-documentation-mcp-server/json",
+        "format": "json"
+      },
+      {
+        "url": "https://pypi.org/pypi/awslabs.core-mcp-server/json",
+        "format": "json"
+      }
+    ],
+    "github_stars": 9600,
+    "pypi_package": "awslabs.core-mcp-server"
+  },
+  {
+    "id": "firecrawl-mcp",
+    "name": "Firecrawl MCP",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/firecrawl/firecrawl-mcp-server",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/firecrawl/firecrawl-mcp-server/main/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/firecrawl/firecrawl-mcp-server/main/README.md",
+        "format": "markdown",
+        "note": "Tool list in README."
+      },
+      {
+        "url": "https://registry.npmjs.org/firecrawl-mcp",
+        "format": "json"
+      }
+    ],
+    "github_stars": 7400,
+    "npm_package": "firecrawl-mcp",
+    "npm_weekly_downloads": 40139
+  },
+  {
+    "id": "desktop-commander",
+    "name": "Desktop Commander MCP",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/wonderwhy-er/DesktopCommanderMCP",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/wonderwhy-er/DesktopCommanderMCP/main/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/wonderwhy-er/DesktopCommanderMCP/main/README.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://registry.npmjs.org/@wonderwhy-er/desktop-commander",
+        "format": "json"
+      }
+    ],
+    "github_stars": 6300,
+    "npm_package": "@wonderwhy-er/desktop-commander",
+    "npm_weekly_downloads": 38923
+  },
+  {
+    "id": "mcp-atlassian",
+    "name": "MCP Atlassian (community, sooperset)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/sooperset/mcp-atlassian",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/sooperset/mcp-atlassian/main/README.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/sooperset/mcp-atlassian/main/pyproject.toml",
+        "format": "toml"
+      },
+      {
+        "url": "https://pypi.org/pypi/mcp-atlassian/json",
+        "format": "json"
+      }
+    ],
+    "github_stars": 5700,
+    "pypi_package": "mcp-atlassian"
+  },
+  {
+    "id": "atlassian-rovo-mcp",
+    "name": "Atlassian Rovo MCP Server (official, remote)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/atlassian/atlassian-mcp-server",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/atlassian/atlassian-mcp-server/main/README.md",
+        "format": "markdown",
+        "note": "Tool list and auth docs; server itself is hosted."
+      }
+    ],
+    "github_stars": 1000,
+    "remote_endpoint": "https://mcp.atlassian.com/v1/mcp"
+  },
+  {
+    "id": "exa-mcp",
+    "name": "Exa MCP Server",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/exa-labs/exa-mcp-server",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/exa-labs/exa-mcp-server/main/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/exa-labs/exa-mcp-server/main/README.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://registry.npmjs.org/exa-mcp-server",
+        "format": "json"
+      }
+    ],
+    "github_stars": 4900,
+    "npm_package": "exa-mcp-server",
+    "npm_weekly_downloads": 25462,
+    "remote_endpoint": "https://mcp.exa.ai/mcp"
+  },
+  {
+    "id": "notion-mcp",
+    "name": "Notion MCP Server (official)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/makenotion/notion-mcp-server",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/makenotion/notion-mcp-server/main/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/makenotion/notion-mcp-server/main/README.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://registry.npmjs.org/@notionhq/notion-mcp-server",
+        "format": "json"
+      }
+    ],
+    "github_stars": 4400,
+    "npm_package": "@notionhq/notion-mcp-server",
+    "npm_weekly_downloads": 172212,
+    "remote_endpoint": "https://mcp.notion.com/mcp"
+  },
+  {
+    "id": "cloudflare-mcp",
+    "name": "Cloudflare MCP Servers",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/cloudflare/mcp-server-cloudflare",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/cloudflare/mcp-server-cloudflare/main/README.md",
+        "format": "markdown",
+        "note": "Catalog of Cloudflare's hosted MCP servers and their tools."
+      }
+    ],
+    "github_stars": 4000
+  },
+  {
+    "id": "grafana-mcp",
+    "name": "Grafana MCP",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/grafana/mcp-grafana",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/grafana/mcp-grafana/main/CHANGELOG.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/grafana/mcp-grafana/main/README.md",
+        "format": "markdown",
+        "note": "Tool list in README."
+      }
+    ],
+    "github_stars": 3300
+  },
+  {
+    "id": "postgres-mcp-pro",
+    "name": "Postgres MCP Pro (crystaldba)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/crystaldba/postgres-mcp",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/crystaldba/postgres-mcp/main/pyproject.toml",
+        "format": "toml"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/crystaldba/postgres-mcp/main/README.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://pypi.org/pypi/postgres-mcp/json",
+        "format": "json"
+      }
+    ],
+    "github_stars": 3200,
+    "pypi_package": "postgres-mcp"
+  },
+  {
+    "id": "mcp-server-postgres-archived",
+    "name": "PostgreSQL (archived reference server)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/modelcontextprotocol/servers-archived",
+    "watch": [
+      {
+        "url": "https://registry.npmjs.org/@modelcontextprotocol/server-postgres",
+        "format": "json",
+        "note": "Archived but still ~100k weekly downloads; watch for deprecation/security republishes."
+      }
+    ],
+    "npm_package": "@modelcontextprotocol/server-postgres",
+    "npm_weekly_downloads": 100745,
+    "archived": true
+  },
+  {
+    "id": "google-workspace-mcp",
+    "name": "Google Workspace MCP (Drive/Gmail/Calendar, community)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/taylorwilsdon/google_workspace_mcp",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/taylorwilsdon/google_workspace_mcp/main/README.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://pypi.org/pypi/workspace-mcp/json",
+        "format": "json"
+      }
+    ],
+    "github_stars": 3000,
+    "pypi_package": "workspace-mcp"
+  },
+  {
+    "id": "mcp-server-gdrive-archived",
+    "name": "Google Drive (archived reference server)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/gdrive",
+    "watch": [
+      {
+        "url": "https://registry.npmjs.org/@modelcontextprotocol/server-gdrive",
+        "format": "json"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/modelcontextprotocol/servers-archived/main/src/gdrive/README.md",
+        "format": "markdown"
+      }
+    ],
+    "npm_package": "@modelcontextprotocol/server-gdrive",
+    "npm_weekly_downloads": 6700,
+    "archived": true
+  },
+  {
+    "id": "supabase-mcp",
+    "name": "Supabase MCP Server",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/supabase/mcp",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/supabase/mcp/main/packages/mcp-server-supabase/CHANGELOG.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/supabase/mcp/main/packages/mcp-server-supabase/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://registry.npmjs.org/@supabase/mcp-server-supabase",
+        "format": "json"
+      }
+    ],
+    "github_stars": 2900,
+    "npm_package": "@supabase/mcp-server-supabase",
+    "npm_weekly_downloads": 102077,
+    "remote_endpoint": "https://mcp.supabase.com/mcp",
+    "note": "Repo renamed from supabase-community/supabase-mcp; old raw URLs still redirect."
+  },
+  {
+    "id": "tavily-mcp",
+    "name": "Tavily MCP",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/tavily-ai/tavily-mcp",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/tavily-ai/tavily-mcp/main/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://registry.npmjs.org/tavily-mcp",
+        "format": "json"
+      }
+    ],
+    "github_stars": 2100,
+    "npm_package": "tavily-mcp",
+    "npm_weekly_downloads": 20899
+  },
+  {
+    "id": "stripe-mcp",
+    "name": "Stripe MCP (@stripe/mcp)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/stripe/ai/tree/main/tools/modelcontextprotocol",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/stripe/ai/main/tools/modelcontextprotocol/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/stripe/ai/main/tools/modelcontextprotocol/README.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://registry.npmjs.org/@stripe/mcp",
+        "format": "json"
+      }
+    ],
+    "github_stars": 1800,
+    "npm_package": "@stripe/mcp",
+    "npm_weekly_downloads": 17353,
+    "remote_endpoint": "https://mcp.stripe.com",
+    "note": "Repo renamed from stripe/agent-toolkit to stripe/ai."
+  },
+  {
+    "id": "slack-mcp-server",
+    "name": "Slack MCP Server (community, korotovsky)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/korotovsky/slack-mcp-server",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/korotovsky/slack-mcp-server/master/README.md",
+        "format": "markdown",
+        "note": "Go project; tool list in README."
+      },
+      {
+        "url": "https://registry.npmjs.org/slack-mcp-server",
+        "format": "json"
+      }
+    ],
+    "github_stars": 1800,
+    "npm_package": "slack-mcp-server",
+    "npm_weekly_downloads": 24316
+  },
+  {
+    "id": "mcp-server-slack-archived",
+    "name": "Slack (archived reference server)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/modelcontextprotocol/servers-archived",
+    "watch": [
+      {
+        "url": "https://registry.npmjs.org/@modelcontextprotocol/server-slack",
+        "format": "json",
+        "note": "Archived but still ~120k weekly downloads."
+      }
+    ],
+    "npm_package": "@modelcontextprotocol/server-slack",
+    "npm_weekly_downloads": 121282,
+    "archived": true
+  },
+  {
+    "id": "docker-mcp-gateway",
+    "name": "Docker MCP Gateway / Toolkit",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/docker/mcp-gateway",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/docker/mcp-gateway/main/README.md",
+        "format": "markdown"
+      }
+    ],
+    "github_stars": 1500
+  },
+  {
+    "id": "brave-search-mcp",
+    "name": "Brave Search MCP Server (official)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/brave/brave-search-mcp-server",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/brave/brave-search-mcp-server/main/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/brave/brave-search-mcp-server/main/README.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://registry.npmjs.org/@brave/brave-search-mcp-server",
+        "format": "json"
+      }
+    ],
+    "github_stars": 1400,
+    "npm_package": "@brave/brave-search-mcp-server",
+    "npm_weekly_downloads": 15853
+  },
+  {
+    "id": "terraform-mcp",
+    "name": "Terraform MCP Server (HashiCorp)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/hashicorp/terraform-mcp-server",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/hashicorp/terraform-mcp-server/main/CHANGELOG.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/hashicorp/terraform-mcp-server/main/README.md",
+        "format": "markdown"
+      }
+    ],
+    "github_stars": 1400
+  },
+  {
+    "id": "mongodb-mcp",
+    "name": "MongoDB MCP Server (official)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/mongodb-js/mongodb-mcp-server",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/mongodb-js/mongodb-mcp-server/main/packages/mongodb-mcp-server/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://registry.npmjs.org/mongodb-mcp-server",
+        "format": "json"
+      }
+    ],
+    "github_stars": 1000,
+    "npm_package": "mongodb-mcp-server",
+    "npm_weekly_downloads": 78836
+  },
+  {
+    "id": "sentry-mcp",
+    "name": "Sentry MCP",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/getsentry/sentry-mcp",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/getsentry/sentry-mcp/main/packages/mcp-server/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/getsentry/sentry-mcp/main/README.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://registry.npmjs.org/@sentry/mcp-server",
+        "format": "json"
+      }
+    ],
+    "github_stars": 714,
+    "npm_package": "@sentry/mcp-server",
+    "npm_weekly_downloads": 139806,
+    "remote_endpoint": "https://mcp.sentry.dev/mcp"
+  },
+  {
+    "id": "vercel-mcp",
+    "name": "Vercel MCP (official, remote) + mcp-handler",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/vercel/mcp-adapter",
+    "watch": [
+      {
+        "url": "https://vercel.com/docs/agent-resources/vercel-mcp.md",
+        "format": "markdown",
+        "note": "Official docs page in markdown; lists tools of the hosted server."
+      },
+      {
+        "url": "https://registry.npmjs.org/mcp-handler",
+        "format": "json",
+        "note": "Vercel's MCP server adapter (formerly @vercel/mcp-adapter)."
+      }
+    ],
+    "github_stars": 663,
+    "npm_package": "mcp-handler",
+    "npm_weekly_downloads": 938147,
+    "remote_endpoint": "https://mcp.vercel.com"
+  },
+  {
+    "id": "neon-mcp",
+    "name": "Neon MCP Server",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/neondatabase/mcp-server-neon",
+    "watch": [
+      {
+        "url": "https://raw.githubusercontent.com/neondatabase/mcp-server-neon/main/CHANGELOG.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/neondatabase/mcp-server-neon/main/package.json",
+        "format": "json"
+      },
+      {
+        "url": "https://registry.npmjs.org/@neondatabase/mcp-server-neon",
+        "format": "json"
+      }
+    ],
+    "github_stars": 624,
+    "npm_package": "@neondatabase/mcp-server-neon",
+    "npm_weekly_downloads": 2364
+  },
+  {
+    "id": "linear-mcp",
+    "name": "Linear MCP Server (official, remote)",
+    "kind": "mcp_server",
+    "repo_url": "https://linear.app/docs/mcp",
+    "watch": [
+      {
+        "url": "https://linear.app/docs/mcp.md",
+        "format": "markdown",
+        "note": "Official docs page in markdown; lists tools. No public source repo."
+      }
+    ],
+    "remote_endpoint": "https://mcp.linear.app/mcp"
+  },
+  {
+    "id": "mcp-server-puppeteer-archived",
+    "name": "Puppeteer (archived reference server)",
+    "kind": "mcp_server",
+    "repo_url": "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/puppeteer",
+    "watch": [
+      {
+        "url": "https://registry.npmjs.org/@modelcontextprotocol/server-puppeteer",
+        "format": "json"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/modelcontextprotocol/servers-archived/main/src/puppeteer/README.md",
+        "format": "markdown"
+      }
+    ],
+    "npm_package": "@modelcontextprotocol/server-puppeteer",
+    "npm_weekly_downloads": 28366,
+    "archived": true
+  },
+  {
+    "id": "openai-api",
+    "name": "OpenAI API",
+    "kind": "model_api",
+    "repo_url": "https://github.com/openai/openai-openapi",
+    "watch": [
+      {
+        "url": "https://developers.openai.com/api/docs/changelog.md",
+        "format": "markdown",
+        "note": "Official API changelog (platform.openai.com/docs/changelog.md 301s here)."
+      },
+      {
+        "url": "https://developers.openai.com/api/docs/deprecations.md",
+        "format": "markdown",
+        "note": "Deprecations page."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/openai/openai-openapi/master/openapi.yaml",
+        "format": "yaml",
+        "note": "Full OpenAPI spec (~3 MB); diff for endpoint/param changes."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/openai/openai-node/master/CHANGELOG.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/openai/openai-python/main/CHANGELOG.md",
+        "format": "markdown"
+      }
+    ],
+    "deprecations_url": "https://developers.openai.com/api/docs/deprecations"
+  },
+  {
+    "id": "anthropic-api",
+    "name": "Anthropic Claude API",
+    "kind": "model_api",
+    "repo_url": "https://github.com/anthropics/anthropic-sdk-typescript",
+    "watch": [
+      {
+        "url": "https://platform.claude.com/docs/en/release-notes/overview.md",
+        "format": "markdown",
+        "note": "Official platform release notes (docs.claude.com/en/release-notes/overview.md is the same content)."
+      },
+      {
+        "url": "https://platform.claude.com/docs/en/about-claude/model-deprecations.md",
+        "format": "markdown",
+        "note": "Model deprecations page."
+      },
+      {
+        "url": "https://platform.claude.com/llms.txt",
+        "format": "text",
+        "note": "Docs index; new pages show up here."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/anthropics/anthropic-sdk-typescript/main/CHANGELOG.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/anthropics/anthropic-sdk-python/main/CHANGELOG.md",
+        "format": "markdown"
+      }
+    ],
+    "deprecations_url": "https://platform.claude.com/docs/en/about-claude/model-deprecations"
+  },
+  {
+    "id": "google-gemini-api",
+    "name": "Google Gemini API",
+    "kind": "model_api",
+    "repo_url": "https://github.com/googleapis/js-genai",
+    "watch": [
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/changelog",
+        "format": "html",
+        "note": "Official changelog; HTML only (no .md variant). Entries are <h2 id=\"MM-DD-YYYY\"> headings; strip markup before diffing."
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/deprecations",
+        "format": "html",
+        "note": "Deprecations page (HTML)."
+      },
+      {
+        "url": "https://ai.google.dev/gemini-api/docs/models",
+        "format": "html",
+        "note": "Model list (HTML)."
+      },
+      {
+        "url": "https://raw.githubusercontent.com/googleapis/js-genai/main/CHANGELOG.md",
+        "format": "markdown"
+      },
+      {
+        "url": "https://raw.githubusercontent.com/googleapis/python-genai/main/CHANGELOG.md",
+        "format": "markdown"
+      }
+    ],
+    "deprecations_url": "https://ai.google.dev/gemini-api/docs/deprecations"
+  }
+]

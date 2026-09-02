@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgentWire — dependency watch for production agents</title>
+<!-- WebMCP origin trial (Chrome 149+): paste the token for the production origin here, e.g.
+     <meta http-equiv="origin-trial" content="TOKEN">   Register: https://developer.chrome.com/origintrials/#/register_trial/4163014905550602241
+     Without a token the tools still register in Chrome with chrome://flags/#enable-webmcp-testing and in ChatGPT's browser. -->
+<meta name="description" content="Daily diffs of the MCP servers, model APIs and SDKs your agents depend on — schema, tool, version and deprecation changes, before they break you.">
+<style>
+  :root{
+    --bg:#f7f7f5;--surface:#ffffff;--line:#e6e4df;--line-2:#d5d2cb;
+    --ink:#1c1b19;--ink-2:#5c5954;--ink-3:#8a867f;
+    --accent:#c2410c;--accent-soft:#fff1ea;
+    --break:#b91c1c;--break-bg:#fee2e2;--notice:#b45309;--notice-bg:#fef3c7;--info:#4b5563;--info-bg:#eceef1;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  header{padding:56px 0 32px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px;color:var(--ink-2);letter-spacing:.02em}
+  .brand b{color:var(--ink);font-weight:600}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  h1{font-size:clamp(30px,4.6vw,44px);line-height:1.08;letter-spacing:-.025em;margin:22px 0 14px;max-width:760px;font-weight:650}
+  .lede{font-size:17px;color:var(--ink-2);max-width:640px;margin:0 0 26px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0 0 8px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+  .stat .k{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em}
+  .stat .v{font-size:24px;font-weight:600;letter-spacing:-.02em;margin-top:2px}
+  .stat .v small{font-size:12px;color:var(--ink-3);font-weight:400;margin-left:6px}
+  section{padding:28px 0}
+  h2{font-size:13px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);margin:0 0 14px;font-weight:600}
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+  .chip{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer;color:var(--ink-2);transition:all .15s}
+  .chip:hover{border-color:var(--ink-3)}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .tablewrap{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);padding:12px 14px;border-bottom:1px solid var(--line);font-weight:600}
+  td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}
+  tr:last-child td{border-bottom:0}
+  tr.row{cursor:pointer}
+  tr.row:hover td{background:#fbfbf9}
+  .when{font-family:var(--mono);font-size:12px;color:var(--ink-3);white-space:nowrap}
+  .src{font-weight:600;white-space:nowrap}
+  .src small{display:block;font-weight:400;color:var(--ink-3);font-size:12px;font-family:var(--mono)}
+  .sev{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:6px;font-weight:600}
+  .sev.breaking{color:var(--break);background:var(--break-bg)}
+  .sev.notice{color:var(--notice);background:var(--notice-bg)}
+  .sev.info{color:var(--info);background:var(--info-bg)}
+  .sum{color:var(--ink)}
+  .sum a{color:var(--ink-3);text-decoration:none;font-family:var(--mono);font-size:12px;display:block;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:520px}
+  .sum a:hover{color:var(--accent)}
+  tr.detail td{background:#fbfbf9;padding:0 14px 14px}
+  pre{margin:0;background:#1c1b19;color:#e7e5e0;border-radius:8px;padding:12px 14px;font-family:var(--mono);font-size:12px;line-height:1.55;overflow:auto;max-height:320px;white-space:pre}
+  pre .a{color:#86efac}pre .r{color:#fca5a5}
+  .empty{padding:40px 16px;text-align:center;color:var(--ink-3)}
+  .empty b{display:block;color:var(--ink);font-weight:600;margin-bottom:4px}
+  .two{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px}
+  .card h3{margin:0 0 6px;font-size:18px;letter-spacing:-.01em}
+  .card p{margin:0 0 14px;color:var(--ink-2);font-size:14px}
+  label{display:block;font-size:12px;font-family:var(--mono);color:var(--ink-3);letter-spacing:.06em;text-transform:uppercase;margin:12px 0 6px}
+  input,textarea{width:100%;border:1px solid var(--line-2);border-radius:8px;padding:10px 12px;font:inherit;font-size:14px;background:#fff;color:var(--ink)}
+  input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
+  textarea{min-height:96px;font-family:var(--mono);font-size:13px;resize:vertical}
+  .picks{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .pick{font-family:var(--mono);font-size:11px;border:1px solid var(--line);background:#fff;border-radius:6px;padding:3px 8px;cursor:pointer;color:var(--ink-2)}
+  .pick.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+  .btn{display:inline-block;border:0;border-radius:8px;padding:11px 16px;font:inherit;font-weight:600;cursor:pointer;background:var(--ink);color:#fff;transition:transform .08s}
+  .btn:active{transform:translateY(1px)}
+  .btn.accent{background:var(--accent)}
+  .btn[disabled]{opacity:.5;cursor:default}
+  .price{font-size:32px;font-weight:650;letter-spacing:-.02em;margin:4px 0 2px}
+  .price small{font-size:13px;color:var(--ink-3);font-weight:400}
+  .ok{color:#166534;background:#dcfce7;border-radius:8px;padding:10px 12px;font-size:14px;margin-top:12px}
+  .err{color:var(--break);background:var(--break-bg);border-radius:8px;padding:10px 12px;font-size:14px;margin-top:12px}
+  .muted{color:var(--ink-3);font-size:13px}
+  .sources{display:flex;flex-wrap:wrap;gap:6px}
+  .sources span{font-family:var(--mono);font-size:12px;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+  footer{padding:32px 0 56px;color:var(--ink-3);font-size:13px;border-top:1px solid var(--line);margin-top:24px}
+  @media (max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.hide-m{display:none}h1{font-size:30px}}
+  /* Agent tools panel (WebMCP) */
+  .agent{position:fixed;right:18px;bottom:18px;width:400px;max-width:calc(100vw - 24px);background:var(--surface);border:1px solid var(--line-2);border-radius:14px;box-shadow:0 12px 40px rgba(28,27,25,.14);z-index:50;font-size:13px;overflow:hidden}
+  .agent-h{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;user-select:none;border-bottom:1px solid var(--line)}
+  .agent-h b{font-family:var(--mono);font-size:12px;letter-spacing:.04em}
+  .agent-h .st{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--ink-3);display:flex;align-items:center;gap:6px}
+  .agent-h .st i{width:7px;height:7px;border-radius:50%;background:var(--ink-3);display:inline-block}
+  .agent-h .st.on i{background:#16a34a;box-shadow:0 0 0 3px #dcfce7}
+  .agent-h .st.off i{background:var(--notice)}
+  .agent-h .tg{color:var(--ink-3);font-size:11px;font-family:var(--mono)}
+  .agent.pulse .agent-h{background:var(--accent-soft)}
+  .agent-b{max-height:min(58vh,520px);overflow:auto}
+  .agent-note{padding:10px 14px;color:var(--ink-2);background:#fbfbf9;border-bottom:1px solid var(--line);font-size:12px;line-height:1.45}
+  .agent-note code{font-family:var(--mono);font-size:11px;background:var(--info-bg);padding:1px 5px;border-radius:4px}
+  .tools{padding:6px 0;border-bottom:1px solid var(--line)}
+  .tool{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:8px 14px;align-items:center}
+  .tool:hover{background:#fbfbf9}
+  .tool .n{grid-column:1;font-family:var(--mono);font-weight:600;font-size:12px}
+  .tool .n span{font-weight:400;color:var(--ink-3);font-size:10px;letter-spacing:.06em;text-transform:uppercase;margin-left:8px;border:1px solid var(--line);border-radius:4px;padding:1px 5px;vertical-align:middle}
+  .tool .d{grid-column:1;color:var(--ink-2);font-size:12px;line-height:1.4}
+  .tool .run{grid-column:2;grid-row:1/3;border:1px solid var(--line-2);background:#fff;border-radius:6px;font:inherit;font-family:var(--mono);font-size:11px;padding:4px 8px;cursor:pointer;color:var(--ink-2)}
+  .tool .run:hover{border-color:var(--ink-3);color:var(--ink)}
+  .log-h{display:flex;align-items:center;padding:8px 14px 4px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+  .log-h span{margin-left:auto;cursor:pointer}
+  .log{padding:0 0 8px}
+  .log .e{padding:7px 14px;border-top:1px solid var(--line);cursor:pointer}
+  .log .e:hover{background:#fbfbf9}
+  .log .e .l1{display:flex;gap:8px;align-items:baseline;font-family:var(--mono);font-size:12px}
+  .log .e .l1 .t{color:var(--ink-3);font-size:11px}
+  .log .e .l1 .nm{font-weight:600}
+  .log .e .l1 .ms{margin-left:auto;color:var(--ink-3);font-size:11px;white-space:nowrap}
+  .log .e .l1 .nm.err{color:var(--break)}
+  .log .e .l2{color:var(--ink-2);font-size:12px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .log .e pre{margin-top:8px;max-height:220px;font-size:11px}
+  .log .e pre + pre{margin-top:6px}
+  .log .empty{padding:14px;font-size:12px}
+  .log .who{font-size:10px;letter-spacing:.06em;text-transform:uppercase;border-radius:4px;padding:1px 5px;color:var(--accent);background:var(--accent-soft)}
+  .log .who.h{color:var(--info);background:var(--info-bg)}
+  .agent.min .agent-b{display:none}
+  tr.row.hl td{background:var(--accent-soft)}
+  .sources span.hl{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  @media (max-width:760px){.agent{right:8px;bottom:8px;left:8px;width:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><span class="dot"></span><b>AgentWire</b> · dependency watch for production agents</div>
+    <h1>Know when an MCP server, model or API your agents depend on changes — before it breaks you.</h1>
+    <p class="lede">Every day we diff the manifests, tool lists, schemas, changelogs and deprecation pages of the most-used MCP servers plus the OpenAI, Anthropic and Gemini APIs. Nothing is injected into your agent. You get the diff.</p>
+    <div class="stats">
+      <div class="stat"><div class="k">Sources watched</div><div class="v" id="s-sources">—</div></div>
+      <div class="stat"><div class="k">URLs diffed daily</div><div class="v" id="s-watches">—</div></div>
+      <div class="stat"><div class="k">Changes · 7 days</div><div class="v" id="s-changes">—</div></div>
+      <div class="stat"><div class="k">Last run</div><div class="v" id="s-run">—</div></div>
+    </div>
+  </header>
+
+  <section>
+    <h2>Live change log</h2>
+    <div class="toolbar">
+      <span class="chip on" data-f="all">All</span>
+      <span class="chip" data-f="breaking">Breaking</span>
+      <span class="chip" data-f="notice">Notice</span>
+      <span class="chip" data-f="info">Info</span>
+      <span style="flex:1"></span>
+      <span class="muted" id="count"></span>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>When</th><th>Source</th><th>Severity</th><th>What changed</th><th class="hide-m">Δ</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="two">
+      <div class="card" id="form-card">
+        <h3>Get alerted on the dependencies you actually use</h3>
+        <p>Paste your MCP servers, model IDs and SDKs. When one of them changes, we email you the diff the same morning. Free while we're in the pilot.</p>
+        <form id="f">
+          <label>Work email</label>
+          <input type="email" name="email" required placeholder="you@company.com">
+          <label>Your dependencies (one per line)</label>
+          <textarea name="deps" placeholder="@modelcontextprotocol/server-filesystem&#10;github-mcp-server (remote)&#10;claude-sonnet-4-5&#10;openai responses api"></textarea>
+          <div class="picks" id="picks"></div>
+          <label>If you got a Slack message the morning one of these changed, with the diff — what would you do with it?</label>
+          <textarea name="workflow" placeholder="e.g. pin the previous version in CI and open a ticket / re-run our eval suite / probably ignore it unless it's a major"></textarea>
+          <div style="margin-top:14px"><button class="btn" type="submit">Watch my dependencies</button></div>
+          <div id="f-msg"></div>
+        </form>
+      </div>
+      <div class="card">
+        <h3>Private watch list</h3>
+        <p>Your own dependency list, alerts to Slack or email the morning something changes, diff included. Cancel any time.</p>
+        <div class="price" id="price">$29 <small>/ month</small></div>
+        <p class="muted">Card required. If nobody pays for this, we'll shut it down and say so.</p>
+        <div id="pay"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>What we watch</h2>
+    <div class="sources" id="sources"></div>
+  </section>
+
+  <footer>AgentWire is a change monitor, not a feed for your agent to read. Diffs are computed from public manifests, registries, changelogs and docs; classification is heuristic — always read the linked source. Built by <a href="https://www.linkedin.com/in/zaeemkhan">Zaeem Khan</a>.</footer>
+</div>
+
+<aside class="agent min" id="agent" aria-label="Agent tools">
+  <div class="agent-h" id="agent-h">
+    <span class="dot"></span><b>Agent tools · WebMCP</b>
+    <span class="st" id="agent-st"><i></i><span id="agent-st-t">checking…</span></span>
+    <span class="tg" id="agent-tg">show</span>
+  </div>
+  <div class="agent-b">
+    <div class="agent-note" id="agent-note"></div>
+    <div class="tools" id="tools"></div>
+    <div class="log-h">Call log <span id="log-clear" title="Clear">clear</span></div>
+    <div class="log" id="log"><div class="empty muted">No calls yet. Ask your browser agent something like “what changed in the MCP servers I use this week?”</div></div>
+  </div>
+</aside>
+
+<script>
+const SB_URL = "https://bhhexzbupdksufmbcuab.supabase.co";
+const SB_KEY = "sb_publishable_bwb4DwKaj_veK_nJG98nYw_MQ5KgPuj";
+const H = {"apikey": SB_KEY, "Authorization": "Bearer " + SB_KEY};
+async function q(path, opts = {}) {
+  const r = await fetch(SB_URL + "/rest/v1/" + path, { ...opts, headers: { ...H, ...(opts.headers || {}) } });
+  if (!r.ok) throw new Error((await r.text()).slice(0, 200) || r.statusText);
+  const t = await r.text();
+  return t ? JSON.parse(t) : null;
+}
+let DIFFS = [], SOURCES = {}, WATCHES = [], LAST_RUN = null, filter = "all";
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ago = iso => { const m = (Date.now() - new Date(iso)) / 60000; if (m < 60) return Math.max(1, Math.round(m)) + "m ago"; if (m < 1440) return Math.round(m/60) + "h ago"; return Math.round(m/1440) + "d ago"; };
+const shortUrl = u => u.replace(/^https?:\/\/(raw\.githubusercontent\.com\/|registry\.npmjs\.org\/|pypi\.org\/pypi\/)?/, "");
+
+function render(){
+  const rows = DIFFS.filter(d => filter === "all" || d.severity === filter);
+  document.getElementById("count").textContent = rows.length ? rows.length + " change" + (rows.length>1?"s":"") + " · last 30 days" : "";
+  const tb = document.getElementById("rows");
+  if (!rows.length){
+    tb.innerHTML = `<tr><td colspan="5" class="empty"><b>${DIFFS.length ? "Nothing at this severity" : "No changes detected yet"}</b>${DIFFS.length ? "" : "Baselines were taken on Sept 1, 2026. The first diffs appear as upstreams publish."}</td></tr>`;
+    return;
+  }
+  tb.innerHTML = rows.map(d => {
+    const s = SOURCES[d.source_id] || {name: d.source_id, kind: ""};
+    const diffHtml = (d.unified_diff || "").split("\n").map(l => l.startsWith("+") ? `<span class="a">${esc(l)}</span>` : l.startsWith("-") ? `<span class="r">${esc(l)}</span>` : esc(l)).join("\n");
+    return `<tr class="row" data-id="${d.id}">
+      <td class="when">${ago(d.detected_at)}</td>
+      <td class="src">${esc(s.name)}<small>${esc(s.kind.replace("_"," "))} · ${esc(d.category.replace("_"," "))}</small></td>
+      <td><span class="sev ${esc(d.severity)}">${esc(d.severity)}</span></td>
+      <td class="sum">${esc(d.summary)}<a href="${esc(d.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${esc(shortUrl(d.url))}</a></td>
+      <td class="hide-m when">+${d.added_lines}/−${d.removed_lines}</td>
+    </tr>
+    <tr class="detail" id="d-${d.id}" hidden><td colspan="5"><pre>${diffHtml || "(no line diff stored)"}</pre></td></tr>`;
+  }).join("");
+  tb.querySelectorAll("tr.row").forEach(tr => tr.addEventListener("click", () => { const el = document.getElementById("d-" + tr.dataset.id); el.hidden = !el.hidden; }));
+}
+
+async function load(){
+  const since = new Date(Date.now() - 30*864e5).toISOString();
+  const [sources, wc, diffs, runs, cfg] = await Promise.all([
+    q("sources?select=id,name,kind,meta&active=eq.true"),
+    q("watches?select=id,source_id,url&active=eq.true&limit=1000"),
+    q("diffs?select=id,detected_at,source_id,url,category,severity,summary,unified_diff,added_lines,removed_lines&detected_at=gte." + since + "&order=detected_at.desc&limit=300"),
+    q("runs?select=started_at,finished_at,watches_total,fetched_ok,changed,errors&order=started_at.desc&limit=1"),
+    q("site_config?select=key,value"),
+  ]);
+  (sources || []).forEach(s => SOURCES[s.id] = s);
+  DIFFS = diffs || [];
+  WATCHES = wc || [];
+  LAST_RUN = (runs || [])[0] || null;
+  document.getElementById("s-sources").textContent = (sources || []).length;
+  document.getElementById("s-watches").textContent = (wc || []).length || "—";
+  const wk = DIFFS.filter(d => Date.now() - new Date(d.detected_at) < 7*864e5);
+  document.getElementById("s-changes").innerHTML = wk.length + `<small>${wk.filter(d=>d.severity==="breaking").length} breaking</small>`;
+  const r = (runs || [])[0];
+  document.getElementById("s-run").innerHTML = r ? ago(r.started_at) + `<small>${r.fetched_ok}/${r.watches_total} ok</small>` : "—";
+  // sources list
+  const order = {spec: 0, model_api: 1, mcp_server: 2};
+  document.getElementById("sources").innerHTML = (sources || []).sort((a,b) => (order[a.kind]-order[b.kind]) || a.name.localeCompare(b.name)).map(s => `<span>${esc(s.name)}</span>`).join("");
+  // picks
+  const picks = (sources || []).filter(s => s.kind !== "spec").map(s => s.meta?.npm_package || s.meta?.pypi_package || s.name).sort();
+  const TOP = 14;
+  document.getElementById("picks").innerHTML = picks.map((p, i) => `<span class="pick" data-v="${esc(p)}" ${i >= TOP ? "hidden" : ""}>${esc(p)}</span>`).join("") + (picks.length > TOP ? `<span class="pick" id="more">+${picks.length - TOP} more</span>` : "");
+  const more = document.getElementById("more"); if (more) more.addEventListener("click", () => { document.querySelectorAll(".pick[hidden]").forEach(x => x.hidden = false); more.remove(); });
+  document.querySelectorAll(".pick:not(#more)").forEach(el => el.addEventListener("click", () => {
+    el.classList.toggle("on");
+    const ta = document.querySelector('textarea[name=deps]');
+    const lines = ta.value.split("\n").map(x => x.trim()).filter(Boolean);
+    const v = el.dataset.v;
+    ta.value = (el.classList.contains("on") ? [...lines.filter(x => x !== v), v] : lines.filter(x => x !== v)).join("\n");
+  }));
+  // stripe
+  const c = Object.fromEntries((cfg || []).map(x => [x.key, x.value]));
+  if (c.price) document.getElementById("price").innerHTML = esc(c.price).replace(/\/(.*)$/, "<small>/ $1</small>");
+  document.getElementById("pay").innerHTML = c.stripe_link
+    ? `<a class="btn accent" href="${esc(c.stripe_link)}" target="_blank" rel="noopener">Start private watch list</a>`
+    : `<button class="btn accent" disabled>Checkout opens this week</button><div class="muted" style="margin-top:8px">Submit your list on the left and you'll get the link first.</div>`;
+  render();
+}
+
+function setFilter(f){ filter = f; document.querySelectorAll(".chip").forEach(x => x.classList.toggle("on", x.dataset.f === f)); render(); }
+document.querySelectorAll(".chip").forEach(ch => ch.addEventListener("click", () => setFilter(ch.dataset.f)));
+
+async function saveList({ email, deps, workflow, source }) {
+  return q("dependency_lists", { method: "POST", headers: { "Content-Type": "application/json", Prefer: "return=minimal" }, body: JSON.stringify({ email, deps, workflow: workflow || null, source, user_agent: navigator.userAgent.slice(0, 200) }) });
+}
+
+document.getElementById("f").addEventListener("submit", async e => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const deps = String(fd.get("deps") || "").split("\n").map(x => x.trim()).filter(Boolean).slice(0, 100);
+  const msg = document.getElementById("f-msg");
+  if (!deps.length) { msg.innerHTML = `<div class="err">Add at least one dependency.</div>`; return; }
+  const btn = e.target.querySelector("button"); btn.disabled = true;
+  let error = null;
+  try { await saveList({ email: fd.get("email"), deps, workflow: fd.get("workflow") || null, source: "site" }); } catch (e) { error = e; }
+  btn.disabled = false;
+  msg.innerHTML = error ? `<div class="err">Couldn't save that: ${esc(error.message)}</div>` : `<div class="ok">Got it. You'll hear from us the first morning one of those changes.</div>`;
+  if (!error) e.target.reset();
+});
+
+
+/* ───────────────────────── WebMCP: the same data, exposed to agents ─────────────────────────
+   Registers four tools on document.modelContext (Chrome 149+ origin trial / chrome://flags/#enable-webmcp-testing,
+   ChatGPT's browser). Each tool runs the same PostgREST queries the human UI uses, and mirrors what it did
+   back into the UI so a person watching the page sees the agent's work. */
+const TOOLS = [
+  {
+    name: "list_changes",
+    description: "List recent changes AgentWire detected across the MCP servers, model APIs and SDKs it watches (manifests, tool lists, schemas, changelogs, deprecation pages). Newest first. Use severity='breaking' to see only major version bumps, removed tools, schema removals and deprecations.",
+    inputSchema: { type: "object", properties: {
+      since_hours: { type: "integer", minimum: 1, maximum: 720, default: 168, description: "Look-back window in hours (default 168 = 7 days, max 720 = 30 days)." },
+      severity: { type: "string", enum: ["breaking", "notice", "info"], description: "Only return changes at this severity." },
+      kind: { type: "string", enum: ["mcp_server", "model_api", "spec"], description: "Only return changes for this kind of source." },
+    }, additionalProperties: false },
+    annotations: { readOnlyHint: true },
+    short: "Recent detected changes, newest first. Filter by window, severity, source kind.",
+    sample: { since_hours: 168, severity: "notice" },
+    async execute({ since_hours = 168, severity, kind } = {}) {
+      const since = new Date(Date.now() - since_hours * 3600e3).toISOString();
+      let path = `diffs?select=id,detected_at,source_id,url,category,severity,summary,added_lines,removed_lines&detected_at=gte.${since}&order=detected_at.desc&limit=100`;
+      if (severity) path += `&severity=eq.${severity}`;
+      if (kind) { const ids = Object.values(SOURCES).filter(s => s.kind === kind).map(s => s.id); path += `&source_id=in.(${ids.join(",")})`; }
+      const rows = await q(path);
+      if (severity) setFilter(severity); else setFilter("all");
+      return { since, count: rows.length, changes: rows.map(shapeDiff), hint: "Call get_diff({diff_id}) for the line-level diff of any change; check_dependency({name}) for one dependency's history and health." };
+    },
+  },
+  {
+    name: "check_dependency",
+    description: "Check one dependency your agent uses — an MCP server, npm/PyPI package, model API or SDK (e.g. '@modelcontextprotocol/server-filesystem', 'github mcp', 'claude', 'openai responses'). Fuzzy-matches against the watched sources and returns its changes in the last 30 days plus whether the last daily run fetched its URLs successfully.",
+    inputSchema: { type: "object", properties: { name: { type: "string", minLength: 1, description: "Package name, server name, model ID or API name. Fuzzy." } }, required: ["name"], additionalProperties: false },
+    annotations: { readOnlyHint: true },
+    short: "Fuzzy-match one dependency → its 30-day changes and last-run health.",
+    sample: { name: "github mcp" },
+    async execute({ name }) {
+      const ranked = matchSources(name);
+      const best = ranked[0];
+      if (!best || best.score < 0.4) return { query: name, match: null, message: "No watched source matches that name.", watched: Object.values(SOURCES).map(s => s.name).sort() };
+      const s = best.source;
+      const since = new Date(Date.now() - 30 * 864e5).toISOString();
+      const rows = await q(`diffs?select=id,detected_at,source_id,url,category,severity,summary,added_lines,removed_lines&source_id=eq.${s.id}&detected_at=gte.${since}&order=detected_at.desc&limit=50`);
+      const urls = WATCHES.filter(w => w.source_id === s.id).map(w => w.url);
+      const errs = (LAST_RUN?.errors || []).filter(e => urls.includes(e.url));
+      highlightSource(s.id);
+      return {
+        query: name,
+        match: { id: s.id, name: s.name, kind: s.kind, npm_package: s.meta?.npm_package || null, pypi_package: s.meta?.pypi_package || null, repo_url: s.repo_url || null, confidence: +best.score.toFixed(2) },
+        alternatives: ranked.slice(1, 4).filter(r => r.score >= 0.4).map(r => ({ id: r.source.id, name: r.source.name, confidence: +r.score.toFixed(2) })),
+        changes_30d: rows.map(shapeDiff),
+        breaking_30d: rows.filter(r => r.severity === "breaking").length,
+        last_run: LAST_RUN ? { started_at: LAST_RUN.started_at, fetched_ok: LAST_RUN.fetched_ok, watches_total: LAST_RUN.watches_total, urls_watched_for_this_source: urls.length, errors_for_this_source: errs, healthy: errs.length === 0 } : null,
+      };
+    },
+  },
+  {
+    name: "get_diff",
+    description: "Return the stored line diff (removed lines prefixed '- ', added lines prefixed '+ ') for one detected change, by its diff_id from list_changes or check_dependency. Read the diff to judge whether a change actually affects you; classification is heuristic.",
+    inputSchema: { type: "object", properties: { diff_id: { type: "integer", minimum: 1, description: "The id of a change." } }, required: ["diff_id"], additionalProperties: false },
+    annotations: { readOnlyHint: true },
+    short: "The stored line diff for one change, by diff_id.",
+    sample: () => ({ diff_id: DIFFS[0]?.id ?? 1 }),
+    async execute({ diff_id }) {
+      const rows = await q(`diffs?select=id,detected_at,source_id,url,category,severity,summary,unified_diff,added_lines,removed_lines&id=eq.${+diff_id}`);
+      if (!rows.length) return { diff_id, found: false, message: "No change with that id." };
+      const d = rows[0];
+      revealDiff(d.id);
+      return { found: true, ...shapeDiff(d), unified_diff: d.unified_diff || "", truncated: (d.unified_diff || "").length >= 20000 };
+    },
+  },
+  {
+    name: "watch_dependencies",
+    description: "Subscribe an email address to AgentWire alerts for a list of dependencies (MCP servers, packages, model IDs, APIs). The morning one of them changes, the diff is emailed. Only call this after the person has confirmed the email and the list — it writes to the database.",
+    inputSchema: { type: "object", properties: {
+      email: { type: "string", format: "email", minLength: 5, maxLength: 200, description: "Where to send alerts." },
+      deps: { type: "array", items: { type: "string", minLength: 1 }, minItems: 1, maxItems: 100, description: "Dependencies to watch, one string each." },
+      workflow: { type: "string", description: "Optional: what the person would do with an alert (helps us shape the product)." },
+    }, required: ["email", "deps"], additionalProperties: false },
+    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false },
+    short: "Subscribe an email to alerts for a list of dependencies. Writes a row.",
+    sample: { email: "you@example.com", deps: ["@modelcontextprotocol/server-filesystem", "claude-sonnet-4-5"], workflow: "pin previous version in CI, open a ticket" },
+    async execute({ email, deps, workflow }) {
+      deps = (deps || []).map(x => String(x).trim()).filter(Boolean).slice(0, 100);
+      if (!deps.length) throw new Error("deps must contain at least one dependency");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email))) throw new Error("email is not a valid address");
+      await saveList({ email, deps, workflow, source: "webmcp" });
+      const f = document.getElementById("f"); f.email.value = email; f.deps.value = deps.join("\n"); if (workflow) f.workflow.value = workflow;
+      document.getElementById("f-msg").innerHTML = `<div class="ok">Saved by your agent: ${deps.length} dependenc${deps.length === 1 ? "y" : "ies"} for ${esc(email)}.</div>`;
+      document.getElementById("form-card").scrollIntoView({ behavior: "smooth", block: "center" });
+      return { ok: true, email, deps, watched_count: deps.length, message: "Saved. Alerts go to this email the morning one of these changes." };
+    },
+  },
+];
+
+function shapeDiff(d) {
+  const s = SOURCES[d.source_id] || {};
+  return { diff_id: d.id, detected_at: d.detected_at, source_id: d.source_id, source: s.name || d.source_id, kind: s.kind || null, category: d.category, severity: d.severity, summary: d.summary, url: d.url, added_lines: d.added_lines, removed_lines: d.removed_lines };
+}
+
+// Fuzzy match: exact package/id hits win; otherwise bigram Dice similarity + token overlap across name, id, npm and pypi package names.
+const ALIASES = { "anthropic-api": ["claude", "anthropic", "messages api", "sonnet", "opus", "haiku"], "openai-api": ["openai", "gpt", "responses api", "chat completions", "o3", "o4"], "google-gemini-api": ["gemini", "google ai", "generative language"] };
+const norm = s => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+const bigrams = s => { const t = s.replace(/\s+/g, " "); const out = new Map(); for (let i = 0; i < t.length - 1; i++) { const g = t.slice(i, i + 2); out.set(g, (out.get(g) || 0) + 1); } return out; };
+function dice(a, b) { const A = bigrams(a), B = bigrams(b); let inter = 0, na = 0, nb = 0; for (const v of A.values()) na += v; for (const v of B.values()) nb += v; for (const [g, c] of A) inter += Math.min(c, B.get(g) || 0); return na + nb ? (2 * inter) / (na + nb) : 0; }
+function matchSources(query) {
+  const qn = norm(query), qtok = new Set(qn.split(" ").filter(t => t.length > 1 && !["mcp", "server", "the", "api"].includes(t)));
+  return Object.values(SOURCES).map(source => {
+    const fields = [source.id, source.name, source.meta?.npm_package, source.meta?.pypi_package, ...(ALIASES[source.id] || [])].filter(Boolean).map(norm);
+    let score = 0;
+    for (const f of fields) {
+      if (f === qn) score = Math.max(score, 1);
+      else if (f.includes(qn) || qn.includes(f)) score = Math.max(score, 0.85 * Math.min(f.length, qn.length) / Math.max(f.length, qn.length) + 0.15);
+      const ftok = f.split(" ").filter(t => t.length > 1 && !["mcp", "server", "the", "api"].includes(t));
+      const qlen = [...qtok].reduce((n, t) => n + t.length, 0);
+      const hitLen = ftok.filter(t => qtok.has(t)).reduce((n, t) => n + t.length, 0); // longer matched tokens count more ("gemini" beats "pro")
+      if (hitLen) score = Math.max(score, 0.4 + 0.5 * hitLen / Math.max(qlen, 1));
+      score = Math.max(score, 0.8 * dice(qn, f));
+    }
+    return { source, score };
+  }).sort((a, b) => b.score - a.score);
+}
+
+function highlightSource(id) {
+  const s = SOURCES[id]; if (!s) return;
+  document.querySelectorAll("#sources span").forEach(el => el.classList.toggle("hl", el.textContent === s.name));
+  const el = [...document.querySelectorAll("#sources span")].find(x => x.textContent === s.name); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+function revealDiff(id) {
+  if (!DIFFS.some(d => d.id === id)) return;
+  setFilter("all");
+  document.querySelectorAll("tr.row.hl").forEach(x => x.classList.remove("hl"));
+  const row = document.querySelector(`tr.row[data-id="${id}"]`), det = document.getElementById("d-" + id);
+  if (row) { row.classList.add("hl"); row.scrollIntoView({ behavior: "smooth", block: "center" }); }
+  if (det) det.hidden = false;
+}
+
+/* Panel: registration status, tool list, live call log */
+const $ = id => document.getElementById(id);
+const LOG = [];
+function logCall(entry) {
+  LOG.unshift(entry); if (LOG.length > 50) LOG.pop();
+  const el = $("log");
+  el.innerHTML = LOG.map((e, i) => `<div class="e" data-i="${i}">
+    <div class="l1"><span class="t">${e.time}</span><span class="nm ${e.error ? "err" : ""}">${esc(e.name)}</span><span class="who ${e.who === "human" ? "h" : ""}">${e.who}</span><span class="ms">${e.error ? "error" : e.ms + " ms · " + e.size + " B"}</span></div>
+    <div class="l2">${esc(e.preview)}</div>
+    <div hidden><pre>${esc("→ " + JSON.stringify(e.input))}</pre><pre>${esc("← " + (e.error ? e.error : e.output))}</pre></div>
+  </div>`).join("");
+  el.querySelectorAll(".e").forEach(x => x.addEventListener("click", () => { const d = x.lastElementChild; d.hidden = !d.hidden; }));
+  const a = $("agent"); a.classList.add("pulse"); setTimeout(() => a.classList.remove("pulse"), 900);
+}
+function wrapExecute(tool, who) {
+  return async (input, ctx) => {
+    const t0 = performance.now(); input = input ?? {};
+    try {
+      const out = await tool.execute(input, ctx);
+      const text = JSON.stringify(out);
+      const preview = out?.message || (out?.count != null ? `${out.count} change${out.count === 1 ? "" : "s"}` : out?.match ? `${out.match.name} · ${out.changes_30d?.length ?? 0} change(s) in 30d · ${out.last_run?.healthy ? "healthy" : "check last run"}` : out?.summary || "ok");
+      logCall({ time: new Date().toLocaleTimeString([], { hour12: false }), name: tool.name, who, input, output: text.length > 20000 ? text.slice(0, 20000) + "…" : text, preview, ms: Math.round(performance.now() - t0), size: text.length });
+      return out;
+    } catch (err) {
+      logCall({ time: new Date().toLocaleTimeString([], { hour12: false }), name: tool.name, who, input, error: String(err.message || err), preview: String(err.message || err), ms: Math.round(performance.now() - t0), size: 0 });
+      throw err;
+    }
+  };
+}
+function renderTools(registered) {
+  $("tools").innerHTML = TOOLS.map(t => `<div class="tool">
+    <div class="n">${esc(t.name)}${t.annotations?.readOnlyHint ? "<span>read</span>" : "<span>write</span>"}</div>
+    <div class="d">${esc(t.short)}</div>
+    <button class="run" data-t="${esc(t.name)}" title="Run with sample arguments (as a human would)">▶ sample</button>
+  </div>`).join("");
+  $("tools").querySelectorAll(".run").forEach(b => b.addEventListener("click", async () => {
+    const t = TOOLS.find(x => x.name === b.dataset.t); const sample = typeof t.sample === "function" ? t.sample() : t.sample;
+    if (t.name === "watch_dependencies") { const f = $("f"); const email = f.email.value.trim(), deps = f.deps.value.split("\n").map(x => x.trim()).filter(Boolean); if (!email || !deps.length) { $("f-msg").innerHTML = `<div class="err">Fill in email and at least one dependency on the form first — the sample call uses them.</div>`; $("form-card").scrollIntoView({ behavior: "smooth", block: "center" }); return; } sample.email = email; sample.deps = deps; sample.workflow = f.workflow.value || undefined; }
+    $("agent").classList.remove("min"); $("agent-tg").textContent = "hide";
+    try { await wrapExecute(t, "human")(sample, {}); } catch (_) {}
+  }));
+}
+async function registerWebMCP() {
+  const mc = document.modelContext || navigator.modelContext || null; // spec + Chrome + ChatGPT use document.modelContext; navigator.* kept for older previews
+  renderTools(!!mc);
+  const st = $("agent-st"), stt = $("agent-st-t"), note = $("agent-note");
+  if (!mc || typeof mc.registerTool !== "function") {
+    st.className = "st off"; stt.textContent = "not detected";
+    note.innerHTML = `This browser doesn't expose <code>document.modelContext</code>. The four tools below are what an agent gets in Chrome 149+ (origin trial, or <code>chrome://flags/#enable-webmcp-testing</code>) or in ChatGPT's browser. The “▶ sample” buttons call the same functions so you can still see them work.`;
+    return;
+  }
+  let n = 0;
+  for (const t of TOOLS) {
+    try { await mc.registerTool({ name: t.name, description: t.description, inputSchema: t.inputSchema, annotations: t.annotations, execute: wrapExecute(t, "agent") }); n++; }
+    catch (e) { console.warn("registerTool failed", t.name, e); }
+  }
+  st.className = "st on"; stt.textContent = `${n} tools registered`;
+  note.innerHTML = `Registered on <code>document.modelContext</code>. An agent in this browser can now query and subscribe using the same data you see above — every call shows up here as it happens.`;
+  window.dispatchEvent(new CustomEvent("agentwire:webmcp-ready", { detail: { tools: n } }));
+}
+$("agent-h").addEventListener("click", () => { const a = $("agent"); a.classList.toggle("min"); $("agent-tg").textContent = a.classList.contains("min") ? "show" : "hide"; });
+$("log-clear").addEventListener("click", e => { e.stopPropagation(); LOG.length = 0; $("log").innerHTML = `<div class="empty muted">Cleared.</div>`; });
+window.AgentWire = { tools: TOOLS, log: LOG, call: (name, input) => wrapExecute(TOOLS.find(t => t.name === name), "human")(input, {}) };
+
+load().then(registerWebMCP).catch(err => { document.getElementById("rows").innerHTML = `<tr><td colspan="5" class="empty">Couldn't load: ${esc(err.message)}</td></tr>`; registerWebMCP(); });
+</script>
+</body>
+</html>
