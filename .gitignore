@@ -19,3 +19,7 @@ supabase/.branches/
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# Firebase local state
+.firebase/
+firebase-debug.log
