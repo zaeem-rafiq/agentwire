@@ -2,7 +2,7 @@
 
 Daily diffs of the MCP servers, model APIs and SDKs your agents depend on — schema, tool-list, version and deprecation changes — surfaced before they break you. Nothing is injected into your agent; you get the diff.
 
-**WebMCP Challenge entry.** The page exposes the same data to browser agents through four [WebMCP](https://developer.chrome.com/docs/ai/webmcp) tools, and shows every agent call live in an "Agent tools" panel so a person and their agent work the same page together. See [SUBMISSION.md](SUBMISSION.md).
+**WebMCP Challenge entry.** The page exposes the same data to browser agents through four [WebMCP](https://developer.chrome.com/docs/ai/webmcp) tools, and shows every agent call live in an "Agent tools" panel so a person and their agent work the same page together. Live at **https://agentwire.web.app**. See [SUBMISSION.md](SUBMISSION.md).
 
 ![Agent tools panel](docs/agent-panel.png)
 
@@ -53,11 +53,9 @@ Optional query params: `offset`, `limit` (batching).
 
 ## Deploy
 
-Firebase Hosting (Google Cloud), static, no build. `firebase.json` serves `site/` with clean URLs.
+Firebase Hosting (Google Cloud project `agentwire-webmcp`, site `agentwire`), static, no build. `firebase.json` serves `site/` with clean URLs.
 
-    gcloud projects create agentwire --name="AgentWire"   # once
-    firebase projects:addfirebase agentwire               # once
-    firebase deploy --only hosting                        # → https://agentwire.web.app
+    firebase deploy --only hosting        # → https://agentwire.web.app
 
 ## License
 

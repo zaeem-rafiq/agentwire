@@ -1,6 +1,6 @@
 # AgentWire — WebMCP Challenge submission kit
 
-Live site: **https://agentwire.web.app** (Firebase Hosting; if the `agentwire` project ID is taken and you create e.g. `agentwire-2026`, the URL becomes `https://agentwire-2026.web.app` — replace it everywhere below)
+Live site: **https://agentwire.web.app** (Firebase Hosting, Google Cloud project `agentwire-webmcp`, deployed 2026-09-02)
 Repo: **https://github.com/zaeem-rafiq/agentwire** (public, MIT)
 Video: **<YouTube URL — you record and upload>**
 
@@ -65,15 +65,7 @@ Fallback if the agent picks the wrong tool on camera: keep rolling, rephrase onc
 
 ## 3. Only you can do these
 
-1. **Re-authenticate zaeem@rafiq.money and deploy to Firebase Hosting.** Both the gcloud and Firebase CLI credentials for that account have expired and need a browser sign-in. From the repo root:
-   ```
-   gcloud auth login zaeem@rafiq.money
-   firebase login --reauth
-   gcloud projects create agentwire --name="AgentWire"
-   firebase projects:addfirebase agentwire
-   firebase deploy --only hosting
-   ```
-   No billing account is needed for Hosting's free tier. If `agentwire` is taken as a project ID, pick another (e.g. `agentwire-2026`) and update `.firebaserc`. Then put the printed Hosting URL into SUBMISSION.md and README.md (search for `agentwire.web.app`), commit and push.
+1. **Deployed.** https://agentwire.web.app is live on Firebase Hosting. Redeploy after any site change with `firebase deploy --only hosting`.
 2. **Origin trial token (optional but recommended).** Register the production origin at https://developer.chrome.com/origintrials/#/register_trial/4163014905550602241 (WebMCP trial, Chrome 149+), paste the token into the `<meta http-equiv="origin-trial">` slot at the top of `site/index.html`, redeploy. Without it the page still works for judges who enable `chrome://flags/#enable-webmcp-testing` and in ChatGPT's browser.
 3. **Record and upload the demo video** (< 3 min, audio narration above) to YouTube as public/unlisted-public.
 4. **Devpost form** at https://webmcp.devpost.com: title, tagline, the description in §1, the live URL, repo URL, video URL, and screenshots (`docs/agent-panel.png`, `docs/agent-form.png`). Deadline **Sept 3 2026, 1:00 PM PDT**.
