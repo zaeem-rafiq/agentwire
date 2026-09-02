@@ -53,7 +53,11 @@ Optional query params: `offset`, `limit` (batching).
 
 ## Deploy
 
-    vercel --cwd site --prod        # project "agentwire"; static, no build
+Firebase Hosting (Google Cloud), static, no build. `firebase.json` serves `site/` with clean URLs.
+
+    gcloud projects create agentwire --name="AgentWire"   # once
+    firebase projects:addfirebase agentwire               # once
+    firebase deploy --only hosting                        # → https://agentwire.web.app
 
 ## License
 

@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "site",
+    "cleanUrls": true,
+    "ignore": ["**/.*"],
+    "headers": [
+      { "source": "**/*.html", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] }
+    ]
+  }
+}
