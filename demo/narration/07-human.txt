@@ -1,0 +1,2 @@
+Host: Can a person run the same thing?
+Expert: One click. The sample button calls the same function, and it shows up in the same log, tagged human, right next to the agent's calls. One code path for both.

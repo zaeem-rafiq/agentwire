@@ -1,0 +1,2 @@
+Host: Let's ask the browser agent what changed this week.
+Expert: It calls list changes with severity notice. The call lands in the panel with its arguments and timing, and the change log filters itself. The person sees exactly what the agent saw.

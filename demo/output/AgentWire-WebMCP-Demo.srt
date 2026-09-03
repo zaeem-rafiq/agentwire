@@ -1,0 +1,68 @@
+1
+00:00:00,000 --> 00:00:01,558
+Host: What is AgentWire?
+
+2
+00:00:01,558 --> 00:00:21,622
+Expert: A change monitor for the things production agents depend on. Every morning it diffs the manifests, tool lists, schemas, changelogs and deprecation pages of forty-eight MCP servers, plus the OpenAI, Anthropic and Gemini APIs. A hundred and nineteen URLs. It shows you what changed before it breaks you.
+
+3
+00:00:22,222 --> 00:00:24,394
+Host: And where does WebMCP come in?
+
+4
+00:00:24,394 --> 00:00:45,913
+Expert: The people who need this are already running agents. So on load, the page registers four tools on document dot model context, with JSON schemas. Three are read-only. One writes. Any agent in this browser can call them. No API key, no separate MCP server, no scraping. And every call is logged on the page, where the person can see it.
+
+5
+00:00:46,513 --> 00:00:49,961
+Host: Let's ask the browser agent what changed this week.
+
+6
+00:00:49,961 --> 00:01:03,103
+Expert: It calls list changes with severity notice. The call lands in the panel with its arguments and timing, and the change log filters itself. The person sees exactly what the agent saw.
+
+7
+00:01:03,723 --> 00:01:06,363
+Host: Is the Neon MCP server safe to update?
+
+8
+00:01:06,363 --> 00:01:22,454
+Expert: That's check dependency. Neon fuzzy-matches the Neon MCP server, the source lights up, and the agent gets its changes from the last thirty days, plus whether our last daily run actually fetched its URLs. So no changes never means we couldn't check.
+
+9
+00:01:25,713 --> 00:01:26,745
+Host: Show me the diff.
+
+10
+00:01:26,745 --> 00:01:36,564
+Expert: Get diff returns the stored lines for that one change. The row opens on screen at the same moment the agent reads it. Same data, same page, both of you.
+
+11
+00:01:45,713 --> 00:01:47,513
+Host: Now subscribe me to those two.
+
+12
+00:01:47,513 --> 00:02:00,404
+Expert: This is the one write. The tool is annotated as not read-only, and its description tells the agent to confirm with you first. When it calls watch dependencies, the form fills in and confirms exactly what was saved.
+
+13
+00:02:03,713 --> 00:02:06,549
+Host: Can a person run the same thing?
+
+14
+00:02:06,549 --> 00:02:15,204
+Expert: One click. The sample button calls the same function, and it shows up in the same log, tagged human, right next to the agent's calls. One code path for both.
+
+15
+00:02:20,713 --> 00:02:39,238
+Host: How do you know this is real?
+
+16
+00:02:39,238 --> 00:02:41,623
+Expert: This is the production site, in Chrome one fifty-two with WebMCP enabled. The browser invokes each tool through the DevTools WebMCP channel, the same path an agent uses, and a dependency-free script in the repo reproduces it. The recorded run is committed.
+
+17
+00:02:43,023 --> 00:02:51,343
+Expert: AgentWire. Dependency watch for production agents, with the agent on the page. Open source, MIT, on GitHub. Thanks.
+

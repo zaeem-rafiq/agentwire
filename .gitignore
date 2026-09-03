@@ -23,3 +23,13 @@ supabase/.branches/
 # Firebase local state
 .firebase/
 firebase-debug.log
+
+# Demo video working files (keep scripts, narration text, cards; drop heavy/generated media)
+demo/captures/frames/
+demo/captures/profile/
+demo/audio/tmp/
+demo/audio/*.pcm
+demo/captures/*.ffconcat
+demo/captures/live.mp4
+demo/captures/*sheet.png
+demo/output/*.mp4

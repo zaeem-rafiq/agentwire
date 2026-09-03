@@ -1,0 +1,2 @@
+Host: How do you know this is real?
+Expert: This is the production site, in Chrome one fifty-two with WebMCP enabled. The browser invokes each tool through the DevTools WebMCP channel, the same path an agent uses, and a dependency-free script in the repo reproduces it. The recorded run is committed.

@@ -1,0 +1,2 @@
+Host: What is AgentWire?
+Expert: A change monitor for the things production agents depend on. Every morning it diffs the manifests, tool lists, schemas, changelogs and deprecation pages of forty-eight MCP servers, plus the OpenAI, Anthropic and Gemini APIs. A hundred and nineteen URLs. It shows you what changed before it breaks you.

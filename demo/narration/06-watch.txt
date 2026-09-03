@@ -1,0 +1,2 @@
+Host: Now subscribe me to those two.
+Expert: This is the one write. The tool is annotated as not read-only, and its description tells the agent to confirm with you first. When it calls watch dependencies, the form fills in and confirms exactly what was saved.
