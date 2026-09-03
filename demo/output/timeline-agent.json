@@ -1,0 +1,54 @@
+{
+  "total": 90.989,
+  "segments": [
+    {
+      "name": "10-open",
+      "start": 0.0,
+      "length": 14.954,
+      "audio": "10-open",
+      "audio_delay": 0.0
+    },
+    {
+      "name": "11-q1",
+      "start": 14.954,
+      "length": 16.426,
+      "audio": "11-q1",
+      "audio_delay": 0.0
+    },
+    {
+      "name": "12-q2",
+      "start": 31.38,
+      "length": 10.8,
+      "audio": "12-q2",
+      "audio_delay": 0.0
+    },
+    {
+      "name": "13-q3",
+      "start": 42.18,
+      "length": 18.3,
+      "audio": "13-q3",
+      "audio_delay": 0.0
+    },
+    {
+      "name": "14-q4",
+      "start": 60.48,
+      "length": 13.354,
+      "audio": "14-q4",
+      "audio_delay": 0.0
+    },
+    {
+      "name": "15-human",
+      "start": 73.834,
+      "length": 8.234,
+      "audio": "15-human",
+      "audio_delay": 0.0
+    },
+    {
+      "name": "16-close",
+      "start": 82.068,
+      "length": 8.921,
+      "audio": "16-close",
+      "audio_delay": 0.6
+    }
+  ]
+}

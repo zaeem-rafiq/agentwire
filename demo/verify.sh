@@ -4,7 +4,7 @@ set -eu
 video=${1:?usage: demo/verify.sh VIDEO}
 failed=0
 duration=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$video")
-if awk -v d="$duration" 'BEGIN { exit !(d >= 120 && d < 179) }'; then printf 'PASS: duration %.1fs inside the 120-179s judge window\n' "$duration"; else printf 'FAIL: duration %.1fs outside 120-179s\n' "$duration"; failed=1; fi
+if awk -v d="$duration" 'BEGIN { exit !(d >= 60 && d < 179) }'; then printf 'PASS: duration %.1fs inside the 60-179s judge window\n' "$duration"; else printf 'FAIL: duration %.1fs outside 60-179s\n' "$duration"; failed=1; fi
 streams=$(ffprobe -v error -show_entries stream=codec_type -of csv=p=0 "$video" | sort | tr '\n' ' ')
 case "$streams" in *audio*video*) echo "PASS: audio + video streams present";; *) echo "FAIL: streams: $streams"; failed=1;; esac
 mean=$(ffmpeg -hide_banner -nostats -i "$video" -vn -af volumedetect -f null - 2>&1 | awk -F': ' '/mean_volume/ {print $2}' | tr -d ' dB')

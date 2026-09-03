@@ -33,3 +33,6 @@ demo/captures/*.ffconcat
 demo/captures/live.mp4
 demo/captures/*sheet.png
 demo/output/*.mp4
+demo/captures/live-agent.mp4
+demo/captures/profile-agent/
+demo/captures/profile-dbg/

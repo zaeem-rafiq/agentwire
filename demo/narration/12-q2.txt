@@ -1,0 +1,2 @@
+Host: Show me the diff.
+Expert: Get diff returns the stored lines for that change, and the row opens on the page as the agent reads it.

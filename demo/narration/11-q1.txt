@@ -1,0 +1,2 @@
+Host: I ask in plain English.
+Expert: The agent reads the tool schemas the page registered, picks check dependency, and Chrome routes the call through WebMCP. The call lands in the panel with its timing, and the answer cites the diff ids.

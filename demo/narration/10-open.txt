@@ -1,0 +1,2 @@
+Host: It's Friday and I'm about to bump the Neon MCP server. Did anything change, and does it break us?
+Expert: Ask the agent in your browser. This page registers four WebMCP tools, so it answers from the same data you see on screen.

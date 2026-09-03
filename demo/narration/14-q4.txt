@@ -1,0 +1,2 @@
+Host: And subscribe me.
+Expert: The one write. The tool is annotated as not read-only. With the email and the list given, the agent calls it, and the form fills in to confirm what was saved.

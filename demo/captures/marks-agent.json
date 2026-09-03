@@ -1,0 +1,130 @@
+{
+  "marks": {
+    "q1": 2.72,
+    "q2": 15.07,
+    "q3": 25.87,
+    "q4": 44.17,
+    "human": 55.68,
+    "end": 62.31
+  },
+  "idle": [
+    {
+      "from": 9.118381124999999,
+      "to": 126.66883833300001
+    },
+    {
+      "from": 129.997043625,
+      "to": 147.353277333
+    },
+    {
+      "from": 154.48125308299998,
+      "to": 157.47282504199998
+    },
+    {
+      "from": 169.69758304199996,
+      "to": 172.641062958
+    },
+    {
+      "from": 176.00869645799997,
+      "to": 186.42925925
+    },
+    {
+      "from": 189.548120708,
+      "to": 204.125594792
+    },
+    {
+      "from": 207.3429785,
+      "to": 221.469496125
+    },
+    {
+      "from": 229.77859845799998,
+      "to": 247.465185875
+    },
+    {
+      "from": 250.83913441699997,
+      "to": 299.16657275
+    }
+  ],
+  "url": "https://agentwire.web.app/",
+  "browser": "Chrome/152.0.7977.66",
+  "model": "gemini-3.8-flash",
+  "frames": 1756,
+  "transcript": [
+    {
+      "question": "Before I bump the Neon MCP server on Friday: did anything change in the last 30 days, and is any of it breaking?",
+      "tool": "check_dependency",
+      "args": {
+        "name": "Neon MCP"
+      },
+      "ms": 413,
+      "summary": "Neon MCP Server · 2 in 30d · healthy"
+    },
+    {
+      "question": "Before I bump the Neon MCP server on Friday: did anything change in the last 30 days, and is any of it breaking?",
+      "answer": "Neon MCP Server had two changes in the last 30 days (#11 and #12), both rated notice severity. Neither change is breaking: they only cover a manifest update and new changelog entries for custom domain functions."
+    },
+    {
+      "question": "Show me the changelog diff so I can see what was added.",
+      "tool": "get_diff",
+      "args": {
+        "diff_id": 12
+      },
+      "ms": 411,
+      "summary": "2+ / 0−"
+    },
+    {
+      "question": "Show me the changelog diff so I can see what was added.",
+      "answer": "Diff #12 for Neon MCP Server added custom domain branch functions (list, register, delete) requiring @neon/tools 1.2.0, plus an OAuth token handling update for asterisk scopes based on per-flow authorize state."
+    },
+    {
+      "question": "Zoom out. What else changed this week across everything we watch, at notice or breaking severity?",
+      "tool": "list_changes",
+      "args": {
+        "since_hours": 168
+      },
+      "ms": 417,
+      "summary": "25 changes"
+    },
+    {
+      "question": "Zoom out. What else changed this week across everything we watch, at notice or breaking severity?",
+      "tool": "list_changes",
+      "args": {
+        "since_hours": 168,
+        "severity": "breaking"
+      },
+      "ms": 171,
+      "summary": "2 changes"
+    },
+    {
+      "question": "Zoom out. What else changed this week across everything we watch, at notice or breaking severity?",
+      "tool": "list_changes",
+      "args": {
+        "severity": "notice",
+        "since_hours": 168
+      },
+      "ms": 252,
+      "summary": "17 changes"
+    },
+    {
+      "question": "Zoom out. What else changed this week across everything we watch, at notice or breaking severity?",
+      "answer": "This week recorded 19 changes at notice or breaking severity: 2 breaking changes from GitHub MCP Server (#19) and Google Gemini API (#30), plus 17 notice changes across OpenAI, Anthropic, Gemini, Grafana, Serena, and reference MCP servers."
+    },
+    {
+      "question": "Good. Watch the Neon MCP server and claude-sonnet-4-5 for me. Email demo@agentwire.dev.",
+      "tool": "watch_dependencies",
+      "args": {
+        "deps": [
+          "Neon MCP server",
+          "claude-sonnet-4-5"
+        ],
+        "email": "demo@agentwire.dev"
+      },
+      "ms": 449,
+      "summary": "saved 2"
+    },
+    {
+      "question": "Good. Watch the Neon MCP server and claude-sonnet-4-5 for me. Email demo@agentwire.dev.",
+      "answer": "Subscribed demo@agentwire.dev to alerts for 2 dependencies: Neon MCP server and claude-sonnet-4-5. You will receive morning diff emails whenever changes are detected for either source."
+    }
+  ]
+}

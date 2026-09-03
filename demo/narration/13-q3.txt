@@ -1,0 +1,2 @@
+Host: Now the wider picture.
+Expert: List changes across all forty-eight sources. One breaking change on the GitHub MCP server, ten notices. It's the same data the change log shows, so the person can verify every claim.

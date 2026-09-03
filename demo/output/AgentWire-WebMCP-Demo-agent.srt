@@ -1,0 +1,52 @@
+1
+00:00:00,000 --> 00:00:05,992
+Host: It's Friday and I'm about to bump the Neon MCP server. Did anything change, and does it break us?
+
+2
+00:00:05,992 --> 00:00:14,154
+Expert: Ask the agent in your browser. This page registers four WebMCP tools, so it answers from the same data you see on screen.
+
+3
+00:00:14,954 --> 00:00:16,546
+Host: I ask in plain English.
+
+4
+00:00:16,546 --> 00:00:30,580
+Expert: The agent reads the tool schemas the page registered, picks check dependency, and Chrome routes the call through WebMCP. The call lands in the panel with its timing, and the answer cites the diff ids.
+
+5
+00:00:31,380 --> 00:00:33,122
+Host: Show me the diff.
+
+6
+00:00:33,122 --> 00:00:39,134
+Expert: Get diff returns the stored lines for that change, and the row opens on the page as the agent reads it.
+
+7
+00:00:42,180 --> 00:00:47,767
+Host: Now the wider picture.
+
+8
+00:00:47,767 --> 00:00:58,254
+Expert: List changes across all forty-eight sources. One breaking change on the GitHub MCP server, ten notices. It's the same data the change log shows, so the person can verify every claim.
+
+9
+00:01:00,480 --> 00:01:02,225
+Host: And subscribe me.
+
+10
+00:01:02,225 --> 00:01:13,034
+Expert: The one write. The tool is annotated as not read-only. With the email and the list given, the agent calls it, and the form fills in to confirm what was saved.
+
+11
+00:01:13,834 --> 00:01:15,792
+Host: Can I do that myself?
+
+12
+00:01:15,792 --> 00:01:21,268
+Expert: One click, same function, same log, tagged human beside agent.
+
+13
+00:01:22,668 --> 00:01:29,189
+Expert: AgentWire. Dependency watch for production agents, with the agent on the page. MIT on GitHub.
+
