@@ -1,2 +1,2 @@
 Host: And where does WebMCP come in?
-Expert: The people who need this are already running agents. So on load, the page registers four tools on document dot model context, with JSON schemas. Three are read-only. One writes. Any agent in this browser can call them. No API key, no separate MCP server, no scraping. And every call is logged on the page, where the person can see it.
+Expert: The people who need this already run agents. So on load, the page registers four tools on document dot model context, with JSON schemas. Three read, one writes. Any agent in this browser can call them: no API key, no separate server, no scraping. And every call is logged on the page, where the person can see it.

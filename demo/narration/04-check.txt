@@ -1,2 +1,2 @@
 Host: Is the Neon MCP server safe to update?
-Expert: That's check dependency. Neon fuzzy-matches the Neon MCP server, the source lights up, and the agent gets its changes from the last thirty days, plus whether our last daily run actually fetched its URLs. So no changes never means we couldn't check.
+Expert: That's check dependency. Neon fuzzy-matches the Neon MCP server, the source lights up, and the agent gets its last thirty days of changes, plus whether our last daily run actually fetched its URLs. So "no changes" never means "we couldn't check".

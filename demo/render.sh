@@ -62,7 +62,7 @@ ffmpeg -y -v error \
     [14:v]trim=duration=$CLOSE,setpts=PTS-STARTPTS,format=rgba,fade=t=in:st=0:d=0.4:alpha=1[close_card];
     [close_bg][close_card]overlay=0:0:eof_action=pass,format=yuv420p[close_v];
     [15:a]adelay=600:all=1,aresample=48000,apad=whole_dur=$CLOSE,atrim=duration=$CLOSE[close_a];
-    [intro_v][intro_a][tools_v][tools_a][list_v][list_a][check_v][check_a][diff_v][diff_a][watch_v][watch_a][human_v][human_a][proof_v][proof_a][close_v][close_a]concat=n=9:v=1:a=1[v][a]
+    [intro_v][intro_a][tools_v][tools_a][list_v][list_a][check_v][check_a][diff_v][diff_a][watch_v][watch_a][human_v][human_a][proof_v][proof_a][close_v][close_a]concat=n=9:v=1:a=1[v][a0];[a0]loudnorm=I=-16:TP=-1.5:LRA=11[a]
   " \
   -map "[v]" -map "[a]" -r 30 -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p -c:a aac -b:a 192k -ar 48000 -ac 1 -movflags +faststart \
   "$O/AgentWire-WebMCP-Demo.mp4"

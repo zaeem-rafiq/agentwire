@@ -8,9 +8,9 @@ import path from "node:path";
 const run = promisify(execFile);
 const demo = path.dirname(new URL(import.meta.url).pathname);
 const project = process.env.GCP_PROJECT; if (!project) throw new Error("GCP_PROJECT is not set.");
-const token = (await run("gcloud", ["auth", "print-access-token"])).stdout.trim();
+const token = process.env.GCP_TOKEN || (await run("gcloud", ["auth", "print-access-token"])).stdout.trim();
 const VOICES = { Host: "en-US-Chirp3-HD-Kore", Expert: "en-US-Chirp3-HD-Iapetus" };
-const RATE = 24000, GAP = 0.35;
+const RATE = 24000, GAP = 0.28;
 const tmp = path.join(demo, "audio", "tmp"); await mkdir(tmp, { recursive: true });
 for (const segment of process.argv.slice(2)) {
   const lines = (await readFile(path.join(demo, "narration", `${segment}.txt`), "utf8")).split("\n").map((l) => l.trim()).filter(Boolean);
@@ -18,7 +18,7 @@ for (const segment of process.argv.slice(2)) {
   for (const [i, line] of lines.entries()) {
     const m = line.match(/^(Host|Expert):\s*(.+)$/); if (!m) throw new Error(`${segment}: bad line: ${line}`);
     const r = await fetch("https://texttospeech.googleapis.com/v1/text:synthesize", { method: "POST", headers: { authorization: `Bearer ${token}`, "x-goog-user-project": project, "content-type": "application/json" },
-      body: JSON.stringify({ input: { text: m[2] }, voice: { languageCode: "en-US", name: VOICES[m[1]] }, audioConfig: { audioEncoding: "LINEAR16", sampleRateHertz: RATE } }) });
+      body: JSON.stringify({ input: { text: m[2] }, voice: { languageCode: "en-US", name: VOICES[m[1]] }, audioConfig: { audioEncoding: "LINEAR16", sampleRateHertz: RATE, speakingRate: 1.1 } }) });
     if (!r.ok) throw new Error(`${segment}: Cloud TTS ${r.status} ${(await r.text()).slice(0, 400)}`);
     const wav = path.join(tmp, `${segment}-${i}.wav`); await writeFile(wav, Buffer.from((await r.json()).audioContent, "base64")); parts.push(wav);
   }

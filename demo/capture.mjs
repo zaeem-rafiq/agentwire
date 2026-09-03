@@ -19,8 +19,8 @@ const overlay = String.raw`(() => {
     "html{scroll-behavior:smooth}",
     "#demo-cursor{position:fixed;left:900px;top:120px;z-index:2147483647;width:22px;height:22px;border:3px solid #fff;border-radius:50%;background:#c2410c;box-shadow:0 2px 8px rgba(0,0,0,.45);pointer-events:none;transform:translate(-50%,-50%);transition:transform .1s;opacity:0}",
     "#demo-cursor.show{opacity:1}#demo-cursor.pressed{transform:translate(-50%,-50%) scale(.7);background:#fff;border-color:#c2410c}",
-    "#demo-prompt{position:fixed;left:50%;top:14px;transform:translate(-50%,-140%);z-index:2147483646;max-width:760px;background:#1c1b19;color:#f4f0e8;border-left:6px solid #c2410c;border-radius:10px;padding:12px 18px;font:15px/1.4 -apple-system,BlinkMacSystemFont,Inter,Segoe UI,sans-serif;box-shadow:0 14px 40px rgba(0,0,0,.3);transition:transform .35s ease;pointer-events:none}",
-    "#demo-prompt.show{transform:translate(-50%,0)}",
+    "#demo-prompt{position:fixed;left:24px;bottom:24px;transform:translateY(140%);z-index:2147483646;max-width:520px;background:#1c1b19;color:#f4f0e8;border-left:6px solid #c2410c;border-radius:10px;padding:12px 18px;font:15px/1.4 -apple-system,BlinkMacSystemFont,Inter,Segoe UI,sans-serif;box-shadow:0 14px 40px rgba(0,0,0,.3);transition:transform .35s ease;pointer-events:none}",
+    "#demo-prompt.show{transform:translateY(0)}",
     "#demo-prompt small{display:block;font:700 10px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;color:#ff9a6b;margin-bottom:6px}",
   ].join("");
   const ready = () => {
@@ -29,7 +29,7 @@ const overlay = String.raw`(() => {
     const pr = document.createElement("div"); pr.id = "demo-prompt"; pr.innerHTML = "<small></small><span></span>";
     document.body.append(cur, pr);
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-    window.__demoPrompt = (label, text) => { pr.querySelector("small").textContent = label; pr.querySelector("span").textContent = text; pr.classList.toggle("show", !!text); };
+    let prT; window.__demoPrompt = (label, text) => { clearTimeout(prT); pr.querySelector("small").textContent = label; pr.querySelector("span").textContent = text; pr.classList.toggle("show", !!text); if (text) prT = setTimeout(() => pr.classList.remove("show"), 7000); };
     window.__demoMove = async (sel, dur = 650) => {
       const el = document.querySelector(sel); if (!el) throw new Error("no " + sel);
       const r = el.getBoundingClientRect(); const to = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
