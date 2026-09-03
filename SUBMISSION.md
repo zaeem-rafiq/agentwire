@@ -2,7 +2,7 @@
 
 Live site: **https://agentwire.web.app** (Firebase Hosting, Google Cloud project `agentwire-webmcp`, deployed 2026-09-02)
 Repo: **https://github.com/zaeem-rafiq/agentwire** (public, MIT)
-Video: **https://youtu.be/GK2S2GWj8KY** (unlisted; flip to Public in YouTube Studio if you prefer)
+Video: **https://youtu.be/3vtLmlmiHe4** (unlisted; flip to Public in YouTube Studio if you prefer)
 
 Works in Google Chrome 149+ with WebMCP enabled (`chrome://flags/#enable-webmcp-testing`, or the origin-trial token) and in ChatGPT's browser (tools appear under *Site tools*).
 
