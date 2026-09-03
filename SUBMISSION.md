@@ -43,23 +43,21 @@ Now: person and agent share one page and one state. The person asks their browse
 
 ---
 
-## 2. Demo video — 2:45 shot list with narration
+## 2. Demo video — what's in the cut (1:31, https://youtu.be/JBnvbj1fF-U)
 
-Record at 1920×1080 in Chrome with `chrome://flags/#enable-webmcp-testing` enabled and the *WebMCP – Model Context Tool Inspector* extension open in the side panel (Gemini mode), or in ChatGPT's browser. Keep the AgentWire "Agent tools" panel expanded bottom-right the whole time. No third-party logos on screen other than the page itself.
+Produced by `demo/capture-agent.mjs` + `demo/render-agent.sh` (see `demo/README.md`): one continuous take on the production site with a real agent on screen. Narration is Host/Expert (Chirp 3 HD Kore + Iapetus).
 
-| Time | Shot | Narration (read this) |
+| Time | What's on screen | Narration (`demo/narration/*.txt`) |
 |---|---|---|
-| 0:00–0:15 | Full page, top. Cursor rests on the headline, then the four stat tiles. | "This is AgentWire. Every morning it diffs the manifests, tool lists, schemas and changelogs of forty-eight MCP servers, the OpenAI, Anthropic and Gemini APIs, and the MCP spec — a hundred and nineteen URLs — and tells you what changed before it breaks your agents." |
-| 0:15–0:30 | Scroll to the live change log. Click **Notice**, click one row so the diff expands. | "Humans get a change log with the actual diff. But the people who need this are running agents — so the page is also a WebMCP tool surface." |
-| 0:30–0:45 | Zoom on the **Agent tools · WebMCP** panel: green "4 tools registered", the four tools with READ/WRITE badges. | "On load, the page registers four tools on document.modelContext, with JSON schemas. Three are read-only. One writes. Any agent in this browser can call them — no API key, no separate MCP server, no scraping." |
-| 0:45–1:10 | In the inspector/agent: type **"What changed in the last 7 days that's severity notice?"** Show the agent picking `list_changes`. Cut to the panel: the call appears with latency, and the **Notice** chip flips on in the change log. | "I ask my browser agent what changed this week. It calls list_changes — you can see the call land in the panel with its arguments and timing — and the page filters itself to match, so I see exactly what the agent saw." |
-| 1:10–1:35 | Agent: **"Is the Neon MCP server safe to update? Anything breaking?"** Show `check_dependency({name:"neon"})`; the source chip highlights under *What we watch*; expand the log entry to show the JSON: match, confidence, changes_30d, last_run healthy. | "Now a fuzzy lookup: 'neon' resolves to the Neon MCP server. The agent gets its changes in the last thirty days, plus whether our last daily run actually fetched its URLs — so 'no changes' never means 'we couldn't check'." |
-| 1:35–1:55 | Agent: **"Show me the diff for the changelog one."** `get_diff` fires; the row in the table highlights, scrolls into view and expands to the green `+` lines. | "It asks for the diff. The row opens on my screen at the same moment the agent reads it. Same data, same page, both of us." |
-| 1:55–2:20 | Agent: **"Subscribe me — my email is …, watch the Neon server and claude-sonnet-4-5."** Show the agent confirming, then `watch_dependencies` (WRITE) in the log; the form on the left fills in and shows the green "Saved by your agent" message. | "Finally a write. The tool is annotated as not read-only and its description tells the agent to confirm with me first. When it calls watch_dependencies, the form fills in and confirms what was saved — the human always sees what the agent did." |
-| 2:20–2:35 | Click **▶ sample** on `check_dependency` yourself; the log shows a HUMAN entry next to the AGENT entries. | "The same functions are one click away for a person, and both show up in one log. One code path, human and agent." |
-| 2:35–2:45 | Back to the top of the page, then the repo README with the tool table. | "AgentWire: dependency watch for production agents, now with the agent on the page. Code is MIT on GitHub. Thanks." |
+| 0:00–0:15 | Cold-open card over the page: "Agent dependencies change silently." | Host: It's Friday and I'm about to bump the Neon MCP server. Did anything change, and does it break us? Expert: Ask the agent in your browser. This page registers four WebMCP tools, so it answers from the same data you see on screen. |
+| 0:15–0:31 | Chat pane (left) types the question; Gemini 3.8 Flash picks `check_dependency`; the call chip shows args + ms; the Agent-tools panel logs it; the answer cites #11 and #12. | Host: I ask in plain English. Expert: The agent reads the tool schemas the page registered, picks check dependency, and Chrome routes the call through WebMCP… |
+| 0:31–0:42 | "Show me the changelog diff." → `get_diff(12)`; the row highlights and opens on the page. | Host: Show me the diff. Expert: Get diff returns the stored lines for that change, and the row opens on the page as the agent reads it. |
+| 0:42–1:00 | "Zoom out…" → `list_changes` at breaking + notice; answer names the GitHub MCP breaking change and the notices. | Host: Now the wider picture. Expert: List changes across all forty-eight sources… so the person can verify every claim. |
+| 1:00–1:14 | "Watch Neon and claude-sonnet-4-5, email demo@…" → `watch_dependencies`; the form fills in and confirms. | Host: And subscribe me. Expert: The one write… the form fills in to confirm what was saved. |
+| 1:14–1:22 | Cursor clicks ▶ sample on `check_dependency`; a HUMAN entry lands beside the AGENT ones. | Host: Can I do that myself? Expert: One click, same function, same log, tagged human beside agent. |
+| 1:22–1:31 | Close card: "The agent is on the page." | Expert: AgentWire. Dependency watch for production agents, with the agent on the page. MIT on GitHub. |
 
-Fallback if the agent picks the wrong tool on camera: keep rolling, rephrase once, cut the retake. If no agent is available, the "▶ sample" buttons plus `node scripts/webmcp-smoke.mjs` on a terminal split-screen demonstrate real browser-mediated calls; say so in narration.
+How it's real: the chat pane is injected for the recording, but the agent is a live Gemini function-calling loop whose tool declarations come from the page's own `registerTool` schemas, and every call is invoked through Chrome's `WebMCP.invokeTool` DevTools command — the same channel a browser agent uses. Model wait time is cut from the timeline; nothing else is edited.
 
 ---
 
