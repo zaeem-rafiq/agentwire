@@ -1,2 +1,2 @@
-Host: What is AgentWire?
-Expert: A change monitor for the things production agents depend on. Every morning it diffs the manifests, tool lists, schemas, changelogs and deprecation pages of forty-eight MCP servers, plus the OpenAI, Anthropic and Gemini APIs, and shows you what changed before it breaks you.
+Host: What problem does AgentWire solve?
+Expert: Your agents depend on MCP servers, model APIs and SDKs that change without telling you. Tools get renamed, models deprecated, schemas shifted, and the first sign is usually an agent silently doing the wrong thing in production. AgentWire diffs those sources every morning and shows you the change before it breaks you.

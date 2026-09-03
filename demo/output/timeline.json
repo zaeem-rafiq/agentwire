@@ -1,65 +1,65 @@
 {
-  "total": 165.631,
+  "total": 167.807,
   "segments": [
     {
       "name": "01-problem",
       "start": 0.0,
-      "length": 20.258,
+      "length": 22.434,
       "audio": "01-problem",
       "audio_delay": 0.0
     },
     {
       "name": "02-tools",
-      "start": 20.258,
+      "start": 22.434,
       "length": 22.882,
       "audio": "02-tools",
       "audio_delay": 0.0
     },
     {
       "name": "03-list",
-      "start": 43.14,
+      "start": 45.316,
       "length": 17.2,
       "audio": "03-list",
       "audio_delay": 0.0
     },
     {
       "name": "04-check",
-      "start": 60.34,
+      "start": 62.516,
       "length": 22.0,
       "audio": "04-check",
       "audio_delay": 0.0
     },
     {
       "name": "05-diff",
-      "start": 82.34,
+      "start": 84.516,
       "length": 20.0,
       "audio": "05-diff",
       "audio_delay": 0.0
     },
     {
       "name": "06-watch",
-      "start": 102.34,
+      "start": 104.516,
       "length": 18.0,
       "audio": "06-watch",
       "audio_delay": 0.0
     },
     {
       "name": "07-human",
-      "start": 120.34,
+      "start": 122.516,
       "length": 17.0,
       "audio": "07-human",
       "audio_delay": 0.0
     },
     {
       "name": "08-proof",
-      "start": 137.34,
+      "start": 139.516,
       "length": 18.858,
       "audio": "08-proof",
       "audio_delay": 0.0
     },
     {
       "name": "09-close",
-      "start": 156.198,
+      "start": 158.374,
       "length": 9.433,
       "audio": "09-close",
       "audio_delay": 0.6
