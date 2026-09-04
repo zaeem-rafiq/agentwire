@@ -65,7 +65,7 @@ The four tools call the same `q()` helper and PostgREST paths as the human UI, t
 
 ## Prior work vs. work in the submission window
 
-Everything in this repository's git history is inside the challenge window: the first commit is 2026-09-02 10:38 CDT ([evidence/git_history.txt](evidence/git_history.txt)). The diff engine, schema and human page were applied to Supabase on 2026-09-01 (comment at the top of `supabase/migrations/0001_init.sql`; baselines taken Sept 1) and are described in the [SUBMISSION.md](SUBMISSION.md) write-up as the pre-existing base. The WebMCP work — the four tools, the Agent tools panel, the `scripts/webmcp-smoke.mjs` proof, and the real-agent demo pipeline in `demo/` — is the challenge submission and is what the demo video shows.
+Everything in this repository's git history is inside the challenge window: the first commit is 2026-09-02 10:38 CDT ([evidence/git_history.txt](evidence/git_history.txt)). The Supabase project itself was created 2026-09-01 22:36 UTC (project metadata) and the diff engine, schema and human page were applied the same day (comment at the top of `supabase/migrations/0001_init.sql`; first snapshots 22:53 UTC, first run 23:03 UTC), so the whole project post-dates the Aug 25 window start and are described in the [SUBMISSION.md](SUBMISSION.md) write-up as the pre-existing base. The WebMCP work — the four tools, the Agent tools panel, the `scripts/webmcp-smoke.mjs` proof, and the real-agent demo pipeline in `demo/` — is the challenge submission and is what the demo video shows.
 
 ## WebMCP tools
 

@@ -43,7 +43,7 @@ Now: person and agent share one page and one state. The person asks their browse
 
 ### Prior work vs. work in the submission window
 
-The diff engine (`supabase/functions/run/index.ts`), schema (`supabase/migrations/0001_init.sql`, applied 2026-09-01 per its header comment), the 48-source list and the human web page were built first and were unchanged for the challenge. The WebMCP work is everything that touches an agent: the four tools registered on `document.modelContext`, the UI mirroring, the Agent tools panel with its call log, the `scripts/webmcp-smoke.mjs` proof that has Chrome itself invoke the tools, and the real-agent demo pipeline in `demo/`. All of it is in this repository's dated commit history, which starts 2026-09-02 10:38 CDT (`evidence/git_history.txt`).
+The diff engine (`supabase/functions/run/index.ts`), schema (`supabase/migrations/0001_init.sql`, applied 2026-09-01 per its header comment; the Supabase project was created 2026-09-01 22:36 UTC and took its first snapshots at 22:53 UTC, after the Aug 25 window start), the 48-source list and the human web page were built first and were unchanged for the challenge. The WebMCP work is everything that touches an agent: the four tools registered on `document.modelContext`, the UI mirroring, the Agent tools panel with its call log, the `scripts/webmcp-smoke.mjs` proof that has Chrome itself invoke the tools, and the real-agent demo pipeline in `demo/`. All of it is in this repository's dated commit history, which starts 2026-09-02 10:38 CDT (`evidence/git_history.txt`).
 
 ### Limitations
 

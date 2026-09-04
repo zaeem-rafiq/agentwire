@@ -9,7 +9,7 @@ Generated 2026-09-03 ~19:50 PDT. Deadline on the Devpost page: **Sep 4 2026 @ 1:
 | Contest name, deadline, criteria, deliverables, eligibility recorded | PASS | `docs/CONTEST.md`, `evidence/devpost_home.txt`, `evidence/devpost_rules.txt` |
 | WebMCP actually used: 4 tools registered on `document.modelContext`, invoked by Chrome | PASS | `evidence/clean_clone_run.txt` (local + production, exit 0), `site/index.html:352-367` |
 | Work created inside the submission window (Aug 25 – deadline) | PASS | `evidence/git_history.txt` (first commit 2026-09-02 10:38 CDT); prior-work section in `README.md` and `SUBMISSION.md` |
-| Backend start date confirmed ≥ Aug 25 (rule for pre-existing projects) | NEEDS-HUMAN | migration header says applied 2026-09-01; confirm nothing predates Aug 25 or add the date to the prior-work section |
+| Backend start date confirmed ≥ Aug 25 (rule for pre-existing projects) | PASS | Supabase project `created_at` 2026-09-01T22:36Z (management API); earliest snapshot 2026-09-01 22:53 UTC, earliest run 23:03 UTC (read-only SQL) |
 | All work committed and pushed; default branch `main` is what judges see | PASS | `git status` clean after the final push; GitHub API `default_branch: main` |
 | Repo public, MIT license detected by GitHub and visible at the top | PASS | GitHub API: `private: false`, `license.spdx_id: MIT`; `LICENSE` |
 | No secrets in history; `.gitignore` covers `.env*`, `.firebase/`, `supabase/.temp/` | PASS | history grep for key patterns: 0 hits; env files ever committed: none. The `sb_publishable_…` key in `site/index.html` is the intended anon key, scoped by RLS (`supabase/migrations/0001_init.sql`) |

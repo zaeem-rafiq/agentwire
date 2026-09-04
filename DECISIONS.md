@@ -6,3 +6,4 @@
 - **19:50 — Not done:** origin-trial registration (external account action), re-cut of the video, deleting the test subscription row (a delete on the live backend), ChatGPT-browser verification (not available here).
 - **19:52 — Push target.** Judges see `main`; this branch is fast-forwardable onto it, so the final push goes to `origin/main` directly (`git push origin HEAD:main`).
 - **19:53 — Video confirmed Public** (user action; YouTube metadata re-checked). **Origin-trial token** landed on `main` from another session (`ba96f6d`) and is live on the site; checklist rows updated to PASS. Remaining NEEDS-HUMAN: re-paste the description on Devpost, confirm the backend start date, ChatGPT-browser check.
+- **19:58 — Backend start date verified** read-only via the Supabase management API and SQL: project created 2026-09-01 22:36 UTC, first snapshots 22:53 UTC. Prior-work paragraphs now cite it; checklist row PASS.
