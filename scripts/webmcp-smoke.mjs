@@ -61,6 +61,10 @@ await invoke("list_sources", { kind: "mcp_server" });
 const missingBatchInput = await invoke("check_dependencies", {});
 if (missingBatchInput?.ok !== false) { console.error("check_dependencies missing-input case did not return ok:false"); b.close(); process.exit(1); }
 await invoke("check_dependencies", { deps: ["@neondatabase/mcp-server-neon", "claude-sonnet-4-5", "not-a-real-package-xyz"] });
+await b.evaluate(`document.querySelectorAll("#sources span.hl").forEach(el => el.classList.remove("hl"))`);
+await invoke("check_dependencies", { deps: ["not-a-real-package-xyz", "@neondatabase/mcp-server-neon"] });
+const highlightedSource = await b.evaluate(`[...document.querySelectorAll("#sources span.hl")].map(el => el.textContent).join(",")`);
+if (highlightedSource !== "Neon MCP Server") { console.error("check_dependencies did not highlight its first matched source:", highlightedSource || "none"); b.close(); process.exit(1); }
 await invoke("check_dependencies", { manifest: '{"mcpServers":{"neon":{"command":"npx","args":["-y","@neondatabase/mcp-server-neon"]}},"dependencies":{"@anthropic-ai/sdk":"^0.60.0"}}' });
 const invalidWatch = await invoke("watch_dependencies", { email: "not-an-email", deps: ["x"] });
 if (invalidWatch?.ok !== false) { console.error("watch_dependencies invalid-email case did not return ok:false"); b.close(); process.exit(1); }
