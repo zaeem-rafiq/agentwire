@@ -34,6 +34,7 @@ async function launch({ port = 9333, headless = true, profile }) {
 
 const url = process.argv[2] || "http://127.0.0.1:8787/";
 const b = await launch({ port: 9333, profile: mkdtempSync(join(tmpdir(), "agentwire-webmcp-")) });
+try {
 const events = []; b.on(m => { if (m.method.startsWith("WebMCP.")) events.push(m); });
 await b.send("WebMCP.enable");
 await b.goto(url);
@@ -65,10 +66,19 @@ await b.evaluate(`document.querySelectorAll("#sources span.hl").forEach(el => el
 await invoke("check_dependencies", { deps: ["not-a-real-package-xyz", "@neondatabase/mcp-server-neon"] });
 const highlightedSource = await b.evaluate(`[...document.querySelectorAll("#sources span.hl")].map(el => el.textContent).join(",")`);
 if (highlightedSource !== "Neon MCP Server") { console.error("check_dependencies did not highlight its first matched source:", highlightedSource || "none"); b.close(); process.exit(1); }
-await invoke("check_dependencies", { manifest: '{"mcpServers":{"neon":{"command":"npx","args":["-y","@neondatabase/mcp-server-neon"]}},"dependencies":{"@anthropic-ai/sdk":"^0.60.0"}}' });
+const manifestBatch = await invoke("check_dependencies", { manifest: '{"mcpServers":{"neon":{"command":"npx","args":["-y","@neondatabase/mcp-server-neon"]}},"dependencies":{"@anthropic-ai/sdk":"^0.60.0"}}' });
+const loggedManifest = await b.evaluate(`AgentWire.log.find(e => e.name === "check_dependencies" && e.input.manifest)?.input.manifest`);
+if (!/^\[manifest redacted: \d+ chars\]$/.test(loggedManifest)) { console.error("check_dependencies exposed raw manifest text in the call log"); b.close(); process.exit(1); }
+const mineDiffId = manifestBatch.results?.flatMap(result => result.changes || [])[0]?.diff_id;
+if (!mineDiffId) { console.error("manifest batch returned no diff to exercise Mine-preserving get_diff"); b.close(); process.exit(1); }
+await invoke("get_diff", { diff_id: mineDiffId });
+const mineStillActive = await b.evaluate(`document.getElementById("chip-mine").classList.contains("on")`);
+if (!mineStillActive) { console.error("get_diff cleared the Mine filter for a dependency in the saved batch"); b.close(); process.exit(1); }
 const invalidWatch = await invoke("watch_dependencies", { email: "not-an-email", deps: ["x"] });
 if (invalidWatch?.ok !== false) { console.error("watch_dependencies invalid-email case did not return ok:false"); b.close(); process.exit(1); }
 if (process.env.WEBMCP_TEST_EMAIL) await invoke("watch_dependencies", { email: process.env.WEBMCP_TEST_EMAIL, deps: ["@neondatabase/mcp-server-neon", "claude-sonnet-4-5"], workflow: "smoke test" });
 else console.log("\n(skipping watch_dependencies — set WEBMCP_TEST_EMAIL to exercise the write tool)");
 console.log("\npanel call log:", await b.evaluate(`AgentWire.log.map(e => e.name + ":" + e.who + ":" + (e.error ? "ERR " + e.error : e.ms + "ms")).join(" | ")`));
-b.close();
+} finally {
+  b.close();
+}
