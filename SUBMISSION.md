@@ -46,6 +46,10 @@ The evidence pack records 25 changes across 13 sources since the Sept 1 baseline
 - **Backend (unchanged for this challenge):** a Deno edge function on Supabase fetches every watch URL daily via pg_cron, normalizes (npm/PyPI/registry JSON, HTML→text), hashes, multiset-line-diffs against the stored snapshot, classifies, and writes `diffs` rows.
 - **Testing:** `scripts/webmcp-smoke.mjs` is a dependency-free script that launches Chrome with WebMCP enabled, asserts all six names, and has the *browser* invoke the five read tools plus structured-error cases through the DevTools `WebMCP.invokeTool` command — the same channel an agent uses. `evidence/smoke_live_2026-09-03_final.txt` is the current production transcript; `docs/webmcp-test-log.md` is historical four-tool evidence.
 
+## Challenges
+
+The WebMCP docs disagreed on the namespace (`document.modelContext` vs older `navigator.modelContext`), so the page feature-detects both and was verified against Chrome 152 directly. Chrome's `execute` return value is JSON-serialized by the browser, which shaped the tools to return plain objects. Fuzzy matching model IDs like `claude-sonnet-4-5` to an API source needed alias tables plus length-weighted token scoring so short tokens like "pro" don't outrank "gemini". Chrome also does not enforce a tool's `inputSchema` at runtime, so every tool re-validates its own arguments before building a query rather than trusting the declared enums and ranges.
+
 ### Prior work vs. work in the submission window
 
 The diff engine (`supabase/functions/run/index.ts`), schema (`supabase/migrations/0001_init.sql`, applied 2026-09-01 per its header comment; the Supabase project was created 2026-09-01 22:36 UTC and took its first snapshots at 22:53 UTC, after the Aug 25 window start), the 48-source list and the original human page were built first. The WebMCP work is everything that touches an agent: the six current tools registered on `document.modelContext`, the UI mirroring and Mine filter, the Agent tools panel with its call log, the `scripts/webmcp-smoke.mjs` proof that has Chrome itself invoke the tools, and the real-agent demo pipeline in `demo/`. The frozen demo records the original four-tool version. All of it is in this repository's dated commit history, which starts 2026-09-02 10:38 CDT (`evidence/git_history.txt`).
@@ -58,6 +62,10 @@ The diff engine (`supabase/functions/run/index.ts`), schema (`supabase/migration
 - **Coverage is the 48 sources / 119 URLs in `data/sources.json`.** Private or unpublished dependencies are not watched.
 - **WebMCP is pre-release.** The tools register in Chrome 149+ with `chrome://flags/#enable-webmcp-testing` (the production origin also carries a WebMCP origin-trial token, so no flag is needed there) and in ChatGPT's browser; other browsers see the page with the panel explaining what an agent would get.
 - **Three daily runs exist so far** (Sept 1 baseline, Sept 2, Sept 3), so the history judges can query is days, not months.
+
+## See a real agent drive it
+
+The demo video is one continuous take on the production site with a real agent on screen: Gemini 3.8 Flash reads the tool schemas the page registered on `document.modelContext`, picks tools by function calling, and every call is invoked through Chrome's WebMCP DevTools channel while the page reacts. The recording predates the two batch tools, so it shows the original four-tool surface; the live site now registers six. The harness is in the repo as `demo/capture-agent.mjs` (Node 22 + Chrome 149+, no npm install) and `demo/README.md` explains the pipeline. The Agent tools panel on the live site logs any agent's calls the same way, so a judge in ChatGPT's browser — or in Chrome 149+, which needs no flag on this origin because it carries a WebMCP origin-trial token — sees the same log.
 
 ---
 
