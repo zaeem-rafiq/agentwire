@@ -48,6 +48,7 @@ if (missingTools.length) { console.error("missing WebMCP tools:", missingTools.j
 async function invoke(toolName, input) {
   const { invocationId } = await b.send("WebMCP.invokeTool", { frameId, toolName, input });
   const ev = await new Promise((resolve, reject) => { const t = setTimeout(() => reject(new Error("timeout")), 20000); b.on(m => { if (m.method === "WebMCP.toolResponded" && m.params.invocationId === invocationId) { clearTimeout(t); resolve(m.params); } }); });
+  if (ev.status !== "Completed") throw new Error(`${toolName} returned ${ev.status}: ${JSON.stringify(ev)}`);
   const out = JSON.stringify(ev.output);
   console.log(`\n=== ${toolName} ===\n→ WebMCP.invokeTool { frameId, toolName: "${toolName}", input: ${JSON.stringify(input)} }\n← ${ev.status}: ${out.slice(0, 1400)}${out.length > 1400 ? ` …[${out.length} chars]` : ""}`);
   return ev.output;
@@ -57,6 +58,8 @@ await invoke("check_dependency", { name: "neon" });
 await invoke("check_dependency", { name: "claude-sonnet-4-5" });
 await invoke("get_diff", { diff_id: list.changes?.[0]?.diff_id ?? 1 });
 await invoke("list_sources", { kind: "mcp_server" });
+const missingBatchInput = await invoke("check_dependencies", {});
+if (missingBatchInput?.ok !== false) { console.error("check_dependencies missing-input case did not return ok:false"); b.close(); process.exit(1); }
 await invoke("check_dependencies", { deps: ["@neondatabase/mcp-server-neon", "claude-sonnet-4-5", "not-a-real-package-xyz"] });
 await invoke("check_dependencies", { manifest: '{"mcpServers":{"neon":{"command":"npx","args":["-y","@neondatabase/mcp-server-neon"]}},"dependencies":{"@anthropic-ai/sdk":"^0.60.0"}}' });
 const invalidWatch = await invoke("watch_dependencies", { email: "not-an-email", deps: ["x"] });
