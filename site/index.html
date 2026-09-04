@@ -414,7 +414,8 @@ const TOOLS = [
       const ids = dedupe(ranked.filter(x => x.best).map(x => x.best.source.id));
       const rows = ids.length ? await q(`diffs?select=id,detected_at,source_id,url,category,severity,summary,added_lines,removed_lines&source_id=in.(${ids.join(",")})&detected_at=gte.${since}&order=detected_at.desc&limit=200`) : [];
       applyMyList(names);
-      if (ranked[0]?.best) highlightSource(ranked[0].best.source.id);
+      const first = ranked.find(x => x.best)?.best;
+      if (first) highlightSource(first.source.id);
       return {
         since,
         checked: names.length,
