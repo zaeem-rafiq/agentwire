@@ -19,7 +19,7 @@ Generated 2026-09-03 ~19:50 PDT. Deadline on the Devpost page: **Sep 4 2026 @ 1:
 | Live URL works in ChatGPT's in-app browser | NEEDS-HUMAN | not verifiable from this machine; open the site there once and confirm *Site tools* lists 4 tools |
 | Demo video < 3 min | PASS | YouTube `lengthSeconds: 91`; `demo/output/timeline-agent.json` total 90.989 s |
 | Demo video has audio narration | NEEDS-HUMAN | `demo/verify.sh` checks mean volume at render time, but the MP4 is not in the repo; play the YouTube link once |
-| Demo video publicly posted | NEEDS-HUMAN | YouTube metadata: `isUnlisted: true`. Rules say "publicly posted"; set to **Public** in YouTube Studio |
+| Demo video publicly posted | PASS | set to Public 2026-09-03 ~19:50 PDT; YouTube metadata re-checked: `isUnlisted: false`, `isPrivate: false` |
 | Text description covers WebMCP fit, UX, human+agent collaboration, implementation | PASS | `SUBMISSION.md` §1 (now also Prior work and Limitations) |
 | Devpost form submitted with current links | NEEDS-HUMAN | recorded as submitted on 2026-09-03; re-paste §1 so the form carries the two new sections, confirm video/live/repo links |
 | Evidence pack with real data, summary table and chart | PASS | `evidence/SUMMARY.md`, `evidence/backend_*.json`, `evidence/changes_chart.png` |
@@ -34,7 +34,7 @@ Generated 2026-09-03 ~19:50 PDT. Deadline on the Devpost page: **Sep 4 2026 @ 1:
 | Demo script with shot list, timestamps, exact on-screen text, deterministic pre-stage | PASS | `docs/DEMO_SCRIPT.md`, `make demo`, `make demo-verify` |
 | Paste-ready form fields | PASS | `docs/SUBMISSION.md` |
 | Social copy | PASS (optional to post) | `docs/SOCIAL.md` |
-| Origin-trial token so judges need no flag on Chrome 149+ | NEEDS-HUMAN (optional) | not registered; slot at top of `site/index.html`; requires a redeploy |
+| Origin-trial token so judges need no flag on Chrome 149+ | PASS | registered and deployed 2026-09-03 (commit `ba96f6d`); `<meta http-equiv="origin-trial">` present on https://agentwire.web.app |
 
 ## C. Polish (not done, by choice)
 
