@@ -534,8 +534,8 @@ function highlightSource(id) {
   const el = [...document.querySelectorAll("#sources span")].find(x => x.textContent === s.name); if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 function revealDiff(id) {
-  if (!DIFFS.some(d => d.id === id)) return;
-  setFilter("all");
+  const diff = DIFFS.find(d => d.id === id); if (!diff) return;
+  if (filter !== "mine" || !MY_IDS.has(diff.source_id)) setFilter("all");
   document.querySelectorAll("tr.row.hl").forEach(x => x.classList.remove("hl"));
   const row = document.querySelector(`tr.row[data-id="${id}"]`), det = document.getElementById("d-" + id);
   if (row) { row.classList.add("hl"); row.scrollIntoView({ behavior: "smooth", block: "center" }); }
@@ -559,14 +559,17 @@ function logCall(entry) {
 function wrapExecute(tool, who) {
   return async (input, ctx) => {
     const t0 = performance.now(); input = input ?? {};
+    const logInput = tool.name === "check_dependencies" && typeof input.manifest === "string"
+      ? { ...input, manifest: `[manifest redacted: ${input.manifest.length} chars]` }
+      : input;
     try {
       const out = await tool.execute(input, ctx);
       const text = JSON.stringify(out);
       const preview = out?.ok === false ? out.error : out?.message || (out?.count != null ? `${out.count} change${out.count === 1 ? "" : "s"}` : out?.match ? `${out.match.name} · ${out.changes_30d?.length ?? 0} change(s) in 30d · ${out.last_run?.healthy ? "healthy" : "check last run"}` : out?.summary || "ok");
-      logCall({ time: new Date().toLocaleTimeString([], { hour12: false }), name: tool.name, who, input, output: text.length > 20000 ? text.slice(0, 20000) + "…" : text, error: out?.ok === false ? out.error : null, preview, ms: Math.round(performance.now() - t0), size: text.length });
+      logCall({ time: new Date().toLocaleTimeString([], { hour12: false }), name: tool.name, who, input: logInput, output: text.length > 20000 ? text.slice(0, 20000) + "…" : text, error: out?.ok === false ? out.error : null, preview, ms: Math.round(performance.now() - t0), size: text.length });
       return out;
     } catch (err) {
-      logCall({ time: new Date().toLocaleTimeString([], { hour12: false }), name: tool.name, who, input, error: String(err.message || err), preview: String(err.message || err), ms: Math.round(performance.now() - t0), size: 0 });
+      logCall({ time: new Date().toLocaleTimeString([], { hour12: false }), name: tool.name, who, input: logInput, error: String(err.message || err), preview: String(err.message || err), ms: Math.round(performance.now() - t0), size: 0 });
       throw err;
     }
   };
