@@ -51,7 +51,7 @@ The diff engine (`supabase/functions/run/index.ts`), schema (`supabase/migration
 - **Fuzzy matching returns a confidence, not a guarantee.** `check_dependency` picks the best of 48 sources and lists alternatives; a name that matches nothing returns the watched list instead of a guess.
 - **Email alerts are a subscription, not yet a delivery pipeline.** `watch_dependencies` stores the list (row-level security allows only that insert); sending is manual today.
 - **Coverage is the 48 sources / 119 URLs in `data/sources.json`.** Private or unpublished dependencies are not watched.
-- **WebMCP is pre-release.** The tools register in Chrome 149+ with `chrome://flags/#enable-webmcp-testing` (or an origin-trial token, not registered for this origin) and in ChatGPT's browser; other browsers see the page with the panel explaining what an agent would get.
+- **WebMCP is pre-release.** The tools register in Chrome 149+ with `chrome://flags/#enable-webmcp-testing` (the production origin also carries a WebMCP origin-trial token, so no flag is needed there) and in ChatGPT's browser; other browsers see the page with the panel explaining what an agent would get.
 - **Three daily runs exist so far** (Sept 1 baseline, Sept 2, Sept 3), so the history judges can query is days, not months.
 
 ---
