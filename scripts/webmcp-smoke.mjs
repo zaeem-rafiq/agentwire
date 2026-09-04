@@ -40,7 +40,11 @@ await b.goto(url);
 for (let i = 0; i < 50 && !(await b.evaluate(`document.getElementById("agent-st-t").textContent.includes("registered")`)); i++) await new Promise(r => setTimeout(r, 200));
 console.log("browser:", b.version, "| page:", url, "| panel status:", await b.evaluate(`document.getElementById("agent-st-t").textContent`));
 const { frameTree } = await b.send("Page.getFrameTree"); const frameId = frameTree.frame.id;
-console.log("WebMCP.toolsAdded →", [...new Set(events.filter(e => e.method === "WebMCP.toolsAdded").flatMap(e => e.params.tools.map(t => t.name)))].join(", "));
+const toolsAdded = [...new Set(events.filter(e => e.method === "WebMCP.toolsAdded").flatMap(e => e.params.tools.map(t => t.name)))];
+console.log("WebMCP.toolsAdded →", toolsAdded.join(", "));
+const expectedTools = ["list_changes", "check_dependency", "list_sources", "check_dependencies", "get_diff", "watch_dependencies"];
+const missingTools = expectedTools.filter(name => !toolsAdded.includes(name));
+if (missingTools.length) { console.error("missing WebMCP tools:", missingTools.join(", ")); b.close(); process.exit(1); }
 async function invoke(toolName, input) {
   const { invocationId } = await b.send("WebMCP.invokeTool", { frameId, toolName, input });
   const ev = await new Promise((resolve, reject) => { const t = setTimeout(() => reject(new Error("timeout")), 20000); b.on(m => { if (m.method === "WebMCP.toolResponded" && m.params.invocationId === invocationId) { clearTimeout(t); resolve(m.params); } }); });
@@ -52,6 +56,11 @@ const list = await invoke("list_changes", { since_hours: 168 });
 await invoke("check_dependency", { name: "neon" });
 await invoke("check_dependency", { name: "claude-sonnet-4-5" });
 await invoke("get_diff", { diff_id: list.changes?.[0]?.diff_id ?? 1 });
+await invoke("list_sources", { kind: "mcp_server" });
+await invoke("check_dependencies", { deps: ["@neondatabase/mcp-server-neon", "claude-sonnet-4-5", "not-a-real-package-xyz"] });
+await invoke("check_dependencies", { manifest: '{"mcpServers":{"neon":{"command":"npx","args":["-y","@neondatabase/mcp-server-neon"]}},"dependencies":{"@anthropic-ai/sdk":"^0.60.0"}}' });
+const invalidWatch = await invoke("watch_dependencies", { email: "not-an-email", deps: ["x"] });
+if (invalidWatch?.ok !== false) { console.error("watch_dependencies invalid-email case did not return ok:false"); b.close(); process.exit(1); }
 if (process.env.WEBMCP_TEST_EMAIL) await invoke("watch_dependencies", { email: process.env.WEBMCP_TEST_EMAIL, deps: ["@neondatabase/mcp-server-neon", "claude-sonnet-4-5"], workflow: "smoke test" });
 else console.log("\n(skipping watch_dependencies — set WEBMCP_TEST_EMAIL to exercise the write tool)");
 console.log("\npanel call log:", await b.evaluate(`AgentWire.log.map(e => e.name + ":" + e.who + ":" + (e.error ? "ERR " + e.error : e.ms + "ms")).join(" | ")`));

@@ -7,7 +7,7 @@ LIVE ?= https://agentwire.web.app/
 serve:            ## serve site/ on http://127.0.0.1:$(PORT)/
 	python3 -m http.server $(PORT) -d site
 
-smoke:            ## Chrome invokes the 3 read tools over the DevTools WebMCP domain against a local server
+smoke:            ## Chrome invokes 5 read tools + one structured-error case over the DevTools WebMCP domain against a local server
 	@python3 -m http.server $(PORT) -d site >/dev/null 2>&1 & pid=$$!; sleep 1; \
 	node scripts/webmcp-smoke.mjs http://127.0.0.1:$(PORT)/; rc=$$?; kill $$pid; exit $$rc
 
