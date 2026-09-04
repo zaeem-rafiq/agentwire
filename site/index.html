@@ -319,8 +319,12 @@ document.getElementById("f").addEventListener("submit", async e => {
   let error = null;
   try { await saveList({ email: fd.get("email"), deps, workflow: fd.get("workflow") || null, source: "site" }); } catch (e) { error = e; }
   btn.disabled = false;
-  msg.innerHTML = error ? `<div class="err">Couldn't save that: ${esc(error.message)}</div>` : `<div class="ok">Got it. You'll hear from us the first morning one of those changes.</div>`;
-  if (!error) e.target.reset();
+  if (error) msg.innerHTML = `<div class="err">Couldn't save that: ${esc(error.message)}</div>`;
+  else {
+    const { matched, of } = applyMyList(deps);
+    msg.innerHTML = `<div class="ok">Saved. ${matched} of ${of} are watched; the log above now shows only their changes.</div>`;
+    e.target.reset();
+  }
 });
 
 
