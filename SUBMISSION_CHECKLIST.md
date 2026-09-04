@@ -21,7 +21,7 @@ Generated 2026-09-03 ~19:50 PDT. Deadline on the Devpost page: **Sep 4 2026 @ 1:
 | Demo video has audio narration | NEEDS-HUMAN | `demo/verify.sh` checks mean volume at render time, but the MP4 is not in the repo; play the YouTube link once |
 | Demo video publicly posted | PASS | set to Public 2026-09-03 ~19:50 PDT; YouTube metadata re-checked: `isUnlisted: false`, `isPrivate: false` |
 | Text description covers WebMCP fit, UX, human+agent collaboration, implementation | PASS | `SUBMISSION.md` §1 (now also Prior work and Limitations) |
-| Devpost form submitted with current links | NEEDS-HUMAN | recorded as submitted on 2026-09-03; re-paste §1 so the form carries the two new sections, confirm video/live/repo links |
+| Devpost form submitted with current links | PASS | edited 2026-09-03 ~20:15 PDT with the user's go-ahead: Prior-work and Limitations sections inserted before the demo section (description 6,689 → 8,686 chars, persisted after reload); public page https://devpost.com/software/agentwire shows them; Try-it-out links = live site + repo; video field = https://youtu.be/JBnvbj1fF-U; status SUBMITTED, 5/5 steps |
 | Evidence pack with real data, summary table and chart | PASS | `evidence/SUMMARY.md`, `evidence/backend_*.json`, `evidence/changes_chart.png` |
 | Open blockers that crash the demo path | PASS (none) | smoke runs exit 0; the one optional cleanup (test row `webmcp-test@example.com` in `dependency_lists`) does not affect the demo |
 
