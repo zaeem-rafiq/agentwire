@@ -8,6 +8,8 @@ Thumbs.db
 # Node / tooling
 node_modules/
 npm-debug.log*
+__pycache__/
+*.pyc
 
 # Deploy + local state
 .vercel/
@@ -36,3 +38,18 @@ demo/output/*.mp4
 demo/captures/live-agent.mp4
 demo/captures/profile-agent/
 demo/captures/profile-dbg/
+
+# Finalist edit workspace (keep SVG, narration, marks, timeline, and SRT provenance)
+demo/edit/*/audio/
+demo/edit/*/assets/
+demo/edit/*/captures/frames/
+demo/edit/*/captures/profile-*/
+demo/edit/*/captures/*.ffconcat
+demo/edit/*/captures/*.mp4
+demo/edit/*/captures/*.png
+demo/edit/*/mezzanine/
+demo/edit/*/output/*.mkv
+demo/edit/*/output/*.mov
+demo/edit/*/output/*.mp4
+demo/edit/*/subtitles/
+demo/edit/*/verify/

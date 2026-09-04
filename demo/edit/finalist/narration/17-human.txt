@@ -1,0 +1,2 @@
+Host: Is this only for agents?
+Expert: No. Human and agent calls share one implementation and appear together in the visible log, with arguments, result size, and latency.

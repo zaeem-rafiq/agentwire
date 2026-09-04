@@ -1,4 +1,4 @@
-"""Build the v7 SRT from the render timeline: one cue per narration line, split at the
+"""Build an SRT from the render timeline: one cue per narration line, split at the
 silences between speaker turns (silencedetect), falling back to a character-weighted split."""
 import json, re, subprocess, sys
 from pathlib import Path
@@ -6,6 +6,7 @@ from pathlib import Path
 demo = Path(__file__).resolve().parent
 import os
 audio_dir = Path(os.environ.get("AGENTWIRE_AUDIO_DIR", demo / "audio"))
+narration_dir = Path(os.environ.get("AGENTWIRE_NARRATION_DIR", demo / "narration"))
 timeline_path, out_path = sys.argv[1], sys.argv[2]
 timeline = json.load(open(timeline_path))
 SCRIPTS = None
@@ -27,11 +28,11 @@ cues = []
 for seg in timeline["segments"]:
     if not seg["audio"]:
         continue
-    lines = [l.strip() for l in open(demo / "narration" / f"{seg["audio"]}.txt", encoding="utf-8") if l.strip()]
+    lines = [l.strip() for l in open(narration_dir / f"{seg["audio"]}.txt", encoding="utf-8") if l.strip()]
     total = duration(seg["audio"]); base = seg["start"] + seg["audio_delay"]
     gaps = silences(seg["audio"])
     if len(gaps) >= len(lines) - 1:
-        gaps = sorted(sorted(gaps, key=lambda g: g[1] - g[0], reverse=True)[:len(lines) - 1])
+        gaps = gaps[:len(lines) - 1]
         bounds = [0.0] + [(s + e) / 2 for s, e in gaps] + [total]
     else:
         weights = [len(l) for l in lines]; acc = 0.0; bounds = [0.0]

@@ -14,12 +14,17 @@ smoke:            ## Chrome invokes 5 read tools + one structured-error case ove
 smoke-live:       ## same smoke test against the production site
 	node scripts/webmcp-smoke.mjs $(LIVE)
 
-demo:             ## re-record the demo video with a real Gemini agent on screen (needs GEMINI_API_KEY, ffmpeg)
-	GEMINI_MODEL=$${GEMINI_MODEL:-gemini-3.8-flash} node demo/capture-agent.mjs $(LIVE)
-	sh demo/render-agent.sh
+demo:             ## re-record the finalist demo (needs GEMINI_API_KEY, ffmpeg, Swift, Pillow)
+	mkdir -p demo/edit/finalist/assets
+	AGENTWIRE_DEMO_EDIT_DIR=$(CURDIR)/demo/edit/finalist GEMINI_MODEL=$${GEMINI_MODEL:-gemini-2.5-flash-lite} node demo/capture-agent.mjs $(LIVE)
+	AGENTWIRE_NARRATION_DIR=$(CURDIR)/demo/edit/finalist/narration AGENTWIRE_AUDIO_DIR=$(CURDIR)/demo/edit/finalist/audio node demo/generate-narration.mjs 10-open 11-audit 12-diff 13-health 14-sources 15-breaking 16-consent 17-human 18-proof 19-close
+	swift demo/render-cards.swift demo/edit/finalist/cards/intro.svg demo/edit/finalist/assets/intro.png
+	swift demo/render-cards.swift demo/edit/finalist/cards/proof.svg demo/edit/finalist/assets/proof.png
+	swift demo/render-cards.swift demo/edit/finalist/cards/close.svg demo/edit/finalist/assets/close.png
+	sh demo/render-agent-finalist.sh
 
 demo-verify:      ## duration / audio / black-frame checks on the rendered demo
-	sh demo/verify.sh demo/output/AgentWire-WebMCP-Demo-agent.mp4
+	sh demo/verify.sh demo/edit/finalist/output/AgentWire-WebMCP-Demo-finalist.mp4
 
 evidence:         ## re-export the read-only backend tables into evidence/ (publishable key, no writes)
 	@KEY=$$(grep -oE "sb_publishable_[A-Za-z0-9_-]+" site/index.html | head -1); B=https://bhhexzbupdksufmbcuab.supabase.co/rest/v1; \

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#1c1b19"/>
+  <rect width="18" height="720" fill="#c2410c"/>
+  <text x="56" y="66" fill="#ff9a6b" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" letter-spacing="3">AGENTWIRE · PROOF OF THE PATH</text>
+  <text x="56" y="142" fill="#f1eee4" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900">REAL AGENT. REAL PAGE STATE.</text>
+
+  <rect x="56" y="206" width="248" height="110" rx="8" fill="#2a2826" stroke="#6b625c" stroke-width="2"/>
+  <text x="180" y="250" text-anchor="middle" fill="#a9ada7" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="2">INPUT</text>
+  <text x="180" y="286" text-anchor="middle" fill="#f1eee4" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="900">PAGE SCHEMAS</text>
+  <text x="325" y="274" fill="#ff9a6b" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="900">→</text>
+
+  <rect x="360" y="206" width="248" height="110" rx="8" fill="#2a2826" stroke="#6b625c" stroke-width="2"/>
+  <text x="484" y="250" text-anchor="middle" fill="#a9ada7" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="2">AGENT</text>
+  <text x="484" y="286" text-anchor="middle" fill="#f1eee4" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="900">GEMINI</text>
+  <text x="629" y="274" fill="#ff9a6b" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="900">→</text>
+
+  <rect x="664" y="206" width="248" height="110" rx="8" fill="#2a2826" stroke="#6b625c" stroke-width="2"/>
+  <text x="788" y="250" text-anchor="middle" fill="#a9ada7" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="2">CHANNEL</text>
+  <text x="788" y="286" text-anchor="middle" fill="#f1eee4" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="900">CHROME WEBMCP</text>
+  <text x="933" y="274" fill="#ff9a6b" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="900">→</text>
+
+  <rect x="968" y="206" width="256" height="110" rx="8" fill="#c2410c"/>
+  <text x="1096" y="250" text-anchor="middle" fill="#f1eee4" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="2">UPDATES</text>
+  <text x="1096" y="282" text-anchor="middle" fill="#f1eee4" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="900">SHARED PAGE</text>
+  <text x="1096" y="306" text-anchor="middle" fill="#f1eee4" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="900">STATE</text>
+
+  <text x="56" y="380" fill="#a9ada7" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700" letter-spacing="2">SIX PAGE-REGISTERED TOOLS</text>
+  <rect x="56" y="410" width="1168" height="150" rx="8" fill="#2a2826"/>
+  <text x="88" y="462" fill="#f1eee4" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="800">list_changes · check_dependency · list_sources</text>
+  <text x="88" y="512" fill="#f1eee4" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="800">check_dependencies · get_diff · watch_dependencies</text>
+  <rect x="56" y="598" width="1168" height="66" fill="#c2410c"/>
+  <text x="88" y="640" fill="#f1eee4" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="900">NO AGENTWIRE API KEY · NO SEPARATE MCP SERVER · NO BROWSER SCRAPING</text>
+</svg>

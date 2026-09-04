@@ -1,0 +1,2 @@
+Host: What if something is missing?
+Expert: List sources shows the watched catalog, package and repository identifiers, kind, and URL coverage. The boundary stays explicit: forty-eight sources and one hundred nineteen URLs, not every private dependency.

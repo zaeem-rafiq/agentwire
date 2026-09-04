@@ -1,0 +1,2 @@
+Host: What proves this is real?
+Expert: You're watching the production site. Real Gemini reads six page-registered schemas, selects tools, and Chrome invokes them through WebMCP. Results update shared page state live. No AgentWire API key, separate MCP server, or scraping.

@@ -1,0 +1,75 @@
+{
+  "total": 170.044,
+  "segments": [
+    {
+      "name": "10-open",
+      "start": 0.0,
+      "length": 19.091,
+      "audio": "10-open",
+      "audio_delay": 0.0
+    },
+    {
+      "name": "11-audit",
+      "start": 19.091,
+      "length": 23.951,
+      "audio": "11-audit",
+      "audio_delay": 0.0
+    },
+    {
+      "name": "12-diff",
+      "start": 43.042,
+      "length": 16.231,
+      "audio": "12-diff",
+      "audio_delay": 0.0
+    },
+    {
+      "name": "13-health",
+      "start": 59.273,
+      "length": 15.151,
+      "audio": "13-health",
+      "audio_delay": 0.0
+    },
+    {
+      "name": "14-sources",
+      "start": 74.424,
+      "length": 16.362,
+      "audio": "14-sources",
+      "audio_delay": 0.0
+    },
+    {
+      "name": "15-breaking",
+      "start": 90.786,
+      "length": 22.431,
+      "audio": "15-breaking",
+      "audio_delay": 0.0
+    },
+    {
+      "name": "16-consent",
+      "start": 113.217,
+      "length": 16.574,
+      "audio": "16-consent",
+      "audio_delay": 0.0
+    },
+    {
+      "name": "17-human",
+      "start": 129.791,
+      "length": 11.671,
+      "audio": "17-human",
+      "audio_delay": 0.0
+    },
+    {
+      "name": "18-proof",
+      "start": 141.462,
+      "length": 20.702,
+      "audio": "18-proof",
+      "audio_delay": 0.0
+    },
+    {
+      "name": "19-close",
+      "start": 162.164,
+      "length": 7.88,
+      "audio": "19-close",
+      "audio_delay": 0.0
+    }
+  ]
+}

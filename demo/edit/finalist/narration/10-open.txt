@@ -1,0 +1,2 @@
+Host: My browser agent is updating a production stack. Can it audit every dependency first?
+Expert: AgentWire diffs one hundred nineteen URLs across forty-eight sources daily, then exposes six WebMCP tools on its production page: five read, one write. Let's check a real config.

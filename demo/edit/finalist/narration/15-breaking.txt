@@ -1,0 +1,2 @@
+Host: What changed outside our list?
+Expert: List changes scans by time, severity, and kind. It surfaces possible breaking changes across MCP servers, model APIs, and specifications. Breaking is heuristic, based on major versions, removed tools or schema fields, and changelog wording. Every result keeps its source for human judgment.

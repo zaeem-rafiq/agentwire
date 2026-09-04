@@ -1,0 +1,2 @@
+Host: One result matters. What actually changed?
+Expert: Gemini calls get diff with its identifier. AgentWire returns the stored added and removed lines, then opens that row on screen. The agent explains the evidence while the person inspects it: same source, same diff.

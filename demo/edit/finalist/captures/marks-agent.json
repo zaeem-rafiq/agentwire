@@ -1,0 +1,90 @@
+{
+  "marks": {
+    "q1": 2.71,
+    "q2": 14.89,
+    "q3": 22.78,
+    "q4": 30.47,
+    "q5": 36.57,
+    "consent": 45.12,
+    "human": 50.13,
+    "end": 56.65
+  },
+  "idle": [],
+  "url": "https://agentwire.web.app/",
+  "browser": "Chrome/152.0.7977.77",
+  "model": "gemini-2.5-flash-lite",
+  "frames": 1113,
+  "transcript": [
+    {
+      "question": "Audit this config as a manifest for the last seven days: {\"mcpServers\":{\"github mcp\":{\"url\":\"https://api.githubcopilot.com/mcp/\"},\"neon\":{\"url\":\"https://mcp.neon.tech/mcp\"}},\"dependencies\":{\"claude-sonnet-4-5\":\"latest\"}}",
+      "tool": "check_dependencies",
+      "args": {
+        "since_hours": 168,
+        "manifest": "{\"mcpServers\":{\"github mcp\":{\"url\":\"https://api.githubcopilot.com/mcp/\"},\"neon\":{\"url\":\"https://mcp.neon.tech/mcp\"}},\"dependencies\":{\"claude-sonnet-4-5\":\"latest\"}}"
+      },
+      "ms": 260,
+      "summary": "3/3 matched · 1 breaking"
+    },
+    {
+      "question": "Audit this config as a manifest for the last seven days: {\"mcpServers\":{\"github mcp\":{\"url\":\"https://api.githubcopilot.com/mcp/\"},\"neon\":{\"url\":\"https://mcp.neon.tech/mcp\"}},\"dependencies\":{\"claude-sonnet-4-5\":\"latest\"}}",
+      "answer": "AgentWire audited your manifest. It found 1 breaking change for github mcp and 2 notice changes for claude-sonnet-4-5 and neon."
+    },
+    {
+      "question": "Open the most important breaking diff from that audit and tell me what the stored lines prove.",
+      "tool": "get_diff",
+      "args": {
+        "diff_id": 19
+      },
+      "ms": 92,
+      "summary": "2+ / 2−"
+    },
+    {
+      "question": "Open the most important breaking diff from that audit and tell me what the stored lines prove.",
+      "answer": "The diff shows the GitHub MCP Server removed `per_page` and added `perPage`. This change in tool parameter naming is the breaking change."
+    },
+    {
+      "question": "Check \"github mcp\" directly. What changed in 30 days, and was its last fetch healthy?",
+      "tool": "check_dependency",
+      "args": {
+        "name": "github mcp"
+      },
+      "ms": 98,
+      "summary": "GitHub MCP Server (official) · 1 in 30d · healthy"
+    },
+    {
+      "question": "Check \"github mcp\" directly. What changed in 30 days, and was its last fetch healthy?",
+      "answer": "GitHub MCP Server had 1 breaking change in 30 days, with a tool list modification. Its last fetch was healthy."
+    },
+    {
+      "question": "Which MCP servers can AgentWire watch?",
+      "tool": "list_sources",
+      "args": {
+        "kind": "mcp_server"
+      },
+      "ms": 3,
+      "summary": "42 sources"
+    },
+    {
+      "question": "Which MCP servers can AgentWire watch?",
+      "answer": "AgentWire can watch 42 MCP servers, including official ones from Atlassian, AWS, Brave Search, Chrome DevTools, Cloudflare, and GitHub. It also watches community and reference servers."
+    },
+    {
+      "question": "Across everything AgentWire watches, list only breaking changes from the last 168 hours.",
+      "tool": "list_changes",
+      "args": {
+        "since_hours": 168,
+        "severity": "breaking"
+      },
+      "ms": 106,
+      "summary": "2 changes"
+    },
+    {
+      "question": "Across everything AgentWire watches, list only breaking changes from the last 168 hours.",
+      "answer": "AgentWire found 2 breaking changes in the last 168 hours: a tool list modification for GitHub MCP Server (#19) and a deprecation update for Google Gemini API (#30)."
+    },
+    {
+      "question": "Save that audited list for alerts.",
+      "answer": "I need an email address to save the alert list. Please confirm the dependency list, and provide the email."
+    }
+  ]
+}

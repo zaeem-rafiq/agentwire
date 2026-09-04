@@ -1,0 +1,75 @@
+1
+00:00:00,000 --> 00:00:05,765
+Host: My browser agent is updating a production stack. Can it audit every dependency first?
+
+2
+00:00:05,765 --> 00:00:18,091
+Expert: AgentWire diffs one hundred nineteen URLs across forty-eight sources daily, then exposes six WebMCP tools on its production page: five read, one write. Let's check a real config.
+
+3
+00:00:19,091 --> 00:00:31,720
+Host: Start with the whole config.
+
+4
+00:00:31,720 --> 00:00:42,942
+Expert: Gemini reads the page's schemas and chooses check dependencies. We paste a config with Neon, GitHub MCP, and Anthropic. Chrome routes one call through WebMCP. AgentWire matches each dependency, returns recent changes and breaking counts, and switches the page to Mine. The person sees what Gemini sees. The manifest body is redacted in the call log.
+
+5
+00:00:43,042 --> 00:00:54,224
+Host: One result matters. What actually changed?
+
+6
+00:00:54,224 --> 00:00:59,173
+Expert: Gemini calls get diff with its identifier. AgentWire returns the stored added and removed lines, then opens that row on screen. The agent explains the evidence while the person inspects it: same source, same diff.
+
+7
+00:00:59,273 --> 00:01:10,775
+Host: Could silence mean a failed fetch?
+
+8
+00:01:10,775 --> 00:01:14,324
+Expert: Check dependency resolves a package, server, model ID, or API name with a confidence score. It returns recent changes and the last run's fetch health for that source. Even with no change, we know whether AgentWire checked.
+
+9
+00:01:14,424 --> 00:01:16,532
+Host: What if something is missing?
+
+10
+00:01:16,532 --> 00:01:30,686
+Expert: List sources shows the watched catalog, package and repository identifiers, kind, and URL coverage. The boundary stays explicit: forty-eight sources and one hundred nineteen URLs, not every private dependency.
+
+11
+00:01:30,786 --> 00:01:32,855
+Host: What changed outside our list?
+
+12
+00:01:32,855 --> 00:01:53,117
+Expert: List changes scans by time, severity, and kind. It surfaces possible breaking changes across MCP servers, model APIs, and specifications. Breaking is heuristic, based on major versions, removed tools or schema fields, and changelog wording. Every result keeps its source for human judgment.
+
+13
+00:01:53,217 --> 00:01:55,154
+Host: Can the agent save this list?
+
+14
+00:01:55,154 --> 00:02:09,691
+Expert: Watch dependencies is the only write. Saving and filtering work now; email and Slack delivery remain pilot-stage.
+
+15
+00:02:09,791 --> 00:02:11,626
+Host: Is this only for agents?
+
+16
+00:02:11,626 --> 00:02:21,362
+Expert: No. Human and agent calls share one implementation and appear together in the visible log, with arguments, result size, and latency.
+
+17
+00:02:21,462 --> 00:02:23,129
+Host: What proves this is real?
+
+18
+00:02:23,129 --> 00:02:41,164
+Expert: You're watching the production site. Real Gemini reads six page-registered schemas, selects tools, and Chrome invokes them through WebMCP. Results update shared page state live. No AgentWire API key, separate MCP server, or scraping.
+
+19
+00:02:42,164 --> 00:02:48,344
+Expert: AgentWire puts the agent on the same page as the evidence and the person deciding. Try the live site.

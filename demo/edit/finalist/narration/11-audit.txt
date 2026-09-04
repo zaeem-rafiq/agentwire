@@ -1,0 +1,2 @@
+Host: Start with the whole config.
+Expert: Gemini reads the page's schemas and chooses check dependencies. We paste a config with Neon, GitHub MCP, and Anthropic. Chrome routes one call through WebMCP. AgentWire matches each dependency, returns recent changes and breaking counts, and switches the page to Mine. The person sees what Gemini sees. The manifest body is redacted in the call log.

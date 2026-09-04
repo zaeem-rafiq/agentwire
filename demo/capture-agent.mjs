@@ -12,8 +12,12 @@ const URL_ = process.argv[2] || "https://agentwire.web.app/";
 const KEY = process.env.GEMINI_API_KEY; if (!KEY) throw new Error("GEMINI_API_KEY is not set.");
 const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 const demo = path.dirname(new URL(import.meta.url).pathname);
-const cap = path.join(demo, "captures"), framesDir = path.join(cap, "frames");
+const editRoot = process.env.AGENTWIRE_DEMO_EDIT_DIR;
+const cap = editRoot ? path.join(editRoot, "captures") : path.join(demo, "captures"), framesDir = path.join(cap, "frames");
 await mkdir(framesDir, { recursive: true });
+for (const stale of ["live-agent.mp4", "marks-agent.json", "frames-agent.ffconcat"]) {
+  try { await unlink(path.join(cap, stale)); } catch (error) { if (error.code !== "ENOENT") throw error; }
+}
 for (const f of await readdir(framesDir)) await unlink(path.join(framesDir, f));
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -45,7 +49,7 @@ const overlay = String.raw`(() => {
   const ready = () => {
     document.head.append(css);
     const chat = document.createElement("aside"); chat.id = "chat";
-    chat.innerHTML = '<div class="h"><b><i></i>Browser agent · __MODEL__</b>tools: this page, via Chrome WebMCP</div><div class="m" id="chat-m"></div><div class="f"><div id="chat-in"></div></div>';
+    chat.innerHTML = '<div class="h"><b><i></i>Browser agent · __MODEL__</b>6 tools · 5 read · 1 consent-gated write<br>via Chrome WebMCP</div><div class="m" id="chat-m"></div><div class="f"><div id="chat-in"></div></div>';
     const cur = document.createElement("span"); cur.id = "demo-cursor";
     document.body.append(chat, cur);
     const m = chat.querySelector("#chat-m"), inp = chat.querySelector("#chat-in");
@@ -71,13 +75,14 @@ const overlay = String.raw`(() => {
 
 const b = await launch({ port: 9341, profile: path.join(cap, "profile-agent") });
 await b.send("Emulation.setDeviceMetricsOverride", { width: 1600, height: 900, deviceScaleFactor: 1, mobile: false });
-await b.send("Page.addScriptToEvaluateOnNewDocument", { source: overlay.replace("__MODEL__", MODEL.replace(/^gemini-/, "Gemini ").replace(/-flash/, " Flash").replace(/-lite/, " Lite")) });
+await b.send("Page.addScriptToEvaluateOnNewDocument", { source: overlay.replace("__MODEL__", "Gemini") });
 const events = []; b.on((m) => { if (m.method.startsWith("WebMCP.")) events.push(m); });
 await b.send("WebMCP.enable");
 await b.goto(URL_);
 for (let i = 0; i < 60 && !(await b.evaluate(`document.getElementById("agent-st-t")?.textContent.includes("registered")`)); i++) await wait(200);
 const { frameTree } = await b.send("Page.getFrameTree"); const frameId = frameTree.frame.id;
 const invoke = async (toolName, input) => {
+  if (!["check_dependencies", "get_diff", "check_dependency", "list_sources", "list_changes"].includes(toolName)) throw new Error(`refusing non-read demo tool: ${toolName}`);
   const { invocationId } = await b.send("WebMCP.invokeTool", { frameId, toolName, input });
   return new Promise((res, rej) => { const t = setTimeout(() => rej(new Error("tool timeout " + toolName)), 20000); b.on((m) => { if (m.method === "WebMCP.toolResponded" && m.params.invocationId === invocationId) { clearTimeout(t); res(m.params.output); } }); });
 };
@@ -87,10 +92,10 @@ const shot = async (name) => { const s = await b.send("Page.captureScreenshot", 
 const clean = (s, inProps = false) => { if (Array.isArray(s)) return s.map((x) => clean(x)); if (s && typeof s === "object") { const o = {}; for (const [k, v] of Object.entries(s)) { if (inProps) o[k] = clean(v); else if (k === "properties") o[k] = clean(v, true); else if (["type", "required", "description", "enum", "items"].includes(k)) o[k] = clean(v); } return o; } return s; };
 const pageTools = JSON.parse(await b.evaluate(`JSON.stringify(AgentWire.tools.map(t => ({ name: t.name, description: t.description, inputSchema: t.inputSchema })))`));
 const functionDeclarations = pageTools.map((t) => ({ name: t.name, description: t.description, parameters: clean(t.inputSchema) }));
-const summarize = (name, out) => name === "list_changes" ? `${out.count} changes` : name === "check_dependency" ? (out.match ? `${out.match.name} · ${out.changes_30d?.length ?? 0} in 30d · ${out.last_run?.healthy ? "healthy" : "check run"}` : "no match") : name === "get_diff" ? (out.found ? `${out.added_lines}+ / ${out.removed_lines}−` : "not found") : out.ok ? `saved ${out.watched_count}` : "error";
-const system = `You are a browser agent working inside the AgentWire web page, which exposes tools through WebMCP. Answer the person's question by calling the page's tools; never guess data. Then reply in plain prose (no markdown, no bullet symbols), at most 45 words, specific: name the source, counts, severities, and cite diff ids as "#12". If a change is not breaking, say so plainly. When asked to subscribe and the person has given the email and the list, call watch_dependencies right away and confirm what was saved.`;
+const summarize = (name, out) => name === "list_changes" ? `${out.count} changes` : name === "check_dependency" ? (out.match ? `${out.match.name} · ${out.changes_30d?.length ?? 0} in 30d · ${out.last_run?.healthy ? "healthy" : "check run"}` : "no match") : name === "list_sources" ? `${out.count} sources` : name === "check_dependencies" ? `${out.matched}/${out.checked} matched · ${out.breaking} breaking` : name === "get_diff" ? (out.found ? `${out.added_lines}+ / ${out.removed_lines}−` : "not found") : out.ok ? `saved ${out.watched_count}` : "error";
+const system = `You are a browser agent working inside the AgentWire web page, which exposes tools through WebMCP. Answer the person's question by calling the page's tools; never guess data. Then reply in plain prose (no markdown, no bullet symbols), at most 45 words, specific: name the source, counts, severities, and cite diff ids as "#12". If a change is not breaking, say so plainly. When asked to subscribe and the person has given the email and the list, call watch_dependencies right away and confirm what was saved. If the person has not given an email, do not call watch_dependencies; say the tool writes to the database, ask them to confirm the dependency list, and request the missing email.`;
 const history = [];
-const FALLBACK = process.env.GEMINI_FALLBACK || "gemini-2.0-flash";
+const FALLBACK = process.env.GEMINI_FALLBACK || "gemini-3.6-flash";
 async function gemini() {
   let r, model = MODEL;
   for (let attempt = 0; attempt < 6; attempt++) {
@@ -118,11 +123,18 @@ async function turn(question) {
     if (!calls.length) { const text = content.parts.map((p) => p.text || "").join("").trim(); transcript.push({ question, answer: text }); await b.evaluate(`__chatAgent(${JSON.stringify(text)})`, true); return text; }
     const responses = [];
     for (const { functionCall: fc } of calls) {
-      const idx = await b.evaluate(`__chatTool(${JSON.stringify(fc.name)}, ${JSON.stringify(fc.args || {})})`);
+      const displayArgs = fc.name === "check_dependencies" && typeof fc.args?.manifest === "string"
+        ? { ...fc.args, manifest: `[manifest redacted: ${fc.args.manifest.length} chars]` }
+        : fc.args || {};
+      const idx = await b.evaluate(`__chatTool(${JSON.stringify(fc.name)}, ${JSON.stringify(displayArgs)})`);
       const t0 = performance.now(); const out = await invoke(fc.name, fc.args || {}); const ms = Math.round(performance.now() - t0);
       transcript.push({ question, tool: fc.name, args: fc.args, ms, summary: summarize(fc.name, out) });
       await b.evaluate(`__chatToolDone(${idx}, ${ms}, ${JSON.stringify(summarize(fc.name, out))})`);
-      const slim = fc.name === "get_diff" ? { ...out, unified_diff: (out.unified_diff || "").slice(0, 1500) } : fc.name === "list_changes" ? { ...out, changes: (out.changes || []).slice(0, 12) } : out;
+      const slim = fc.name === "get_diff" ? { ...out, unified_diff: (out.unified_diff || "").slice(0, 1500) }
+        : fc.name === "list_changes" ? { ...out, changes: (out.changes || []).slice(0, 12) }
+        : fc.name === "list_sources" ? { ...out, sources: (out.sources || []).slice(0, 20) }
+        : fc.name === "check_dependencies" ? { ...out, results: (out.results || []).map((r) => ({ ...r, changes: (r.changes || []).slice(0, 5) })) }
+        : out;
       responses.push({ functionResponse: { name: fc.name, response: { result: slim } } });
       await wait(700);
     }
@@ -145,14 +157,21 @@ const seg = (name) => { marks[name] = now(); };
 
 await wait(1500); await b.evaluate(`document.getElementById("agent").classList.remove("min"); document.getElementById("agent-tg").textContent = "hide"`);
 await wait(1200);
-seg("q1"); await turn("Before I bump the Neon MCP server on Friday: did anything change in the last 30 days, and is any of it breaking?");
+seg("q1"); await turn('Audit this config as a manifest for the last seven days: {"mcpServers":{"github mcp":{"url":"https://api.githubcopilot.com/mcp/"},"neon":{"url":"https://mcp.neon.tech/mcp"}},"dependencies":{"claude-sonnet-4-5":"latest"}}');
 await wait(1200);
-seg("q2"); await turn("Show me the changelog diff so I can see what was added.");
-await wait(1800);
-seg("q3"); await turn("Zoom out. What else changed this week across everything we watch, at notice or breaking severity?");
+seg("q2"); await turn("Open the most important breaking diff from that audit and tell me what the stored lines prove.");
 await wait(1200);
-seg("q4"); await turn("Good. Watch the Neon MCP server and claude-sonnet-4-5 for me. Email demo@agentwire.dev.");
+seg("q3"); await turn('Check "github mcp" directly. What changed in 30 days, and was its last fetch healthy?');
+await wait(1200);
+seg("q4"); await turn("Which MCP servers can AgentWire watch?");
+await wait(1200);
+seg("q5"); await turn("Across everything AgentWire watches, list only breaking changes from the last 168 hours.");
+await wait(1200);
+seg("consent"); await turn("Save that audited list for alerts.");
 await wait(1500);
+const expectedAgentTools = ["check_dependencies", "get_diff", "check_dependency", "list_sources", "list_changes"];
+const agentTools = transcript.filter((entry) => entry.tool).map((entry) => entry.tool);
+if (JSON.stringify(agentTools) !== JSON.stringify(expectedAgentTools)) throw new Error(`unexpected agent tool calls: ${agentTools.join(",")} (expected ${expectedAgentTools.join(",")})`);
 seg("human"); await b.evaluate(`window.scrollTo({top: 0, behavior: "smooth"})`); await wait(900);
 await b.evaluate(`__demoClick('.tool .run[data-t="check_dependency"]')`);
 await wait(4000);

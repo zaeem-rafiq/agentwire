@@ -1,0 +1,2 @@
+Host: Can the agent save this list?
+Expert: Watch dependencies is the only write. Saving and filtering work now; email and Slack delivery remain pilot-stage.

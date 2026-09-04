@@ -589,7 +589,7 @@ function wrapExecute(tool, who) {
     try {
       const out = await tool.execute(input, ctx);
       const text = JSON.stringify(out);
-      const preview = out?.ok === false ? out.error : out?.message || (out?.count != null ? `${out.count} change${out.count === 1 ? "" : "s"}` : out?.match ? `${out.match.name} · ${out.changes_30d?.length ?? 0} change(s) in 30d · ${out.last_run?.healthy ? "healthy" : "check last run"}` : out?.summary || "ok");
+      const preview = out?.ok === false ? out.error : out?.message || (out?.count != null ? `${out.count} ${tool.name === "list_sources" ? "source" : "change"}${out.count === 1 ? "" : "s"}` : out?.match ? `${out.match.name} · ${out.changes_30d?.length ?? 0} change(s) in 30d · ${out.last_run?.healthy ? "healthy" : "check last run"}` : out?.summary || "ok");
       logCall({ time: new Date().toLocaleTimeString([], { hour12: false }), name: tool.name, who, input: logInput, output: text.length > 20000 ? text.slice(0, 20000) + "…" : text, error: out?.ok === false ? out.error : null, preview, ms: Math.round(performance.now() - t0), size: text.length });
       return out;
     } catch (err) {

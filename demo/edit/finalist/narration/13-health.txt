@@ -1,0 +1,2 @@
+Host: Could silence mean a failed fetch?
+Expert: Check dependency resolves a package, server, model ID, or API name with a confidence score. It returns recent changes and the last run's fetch health for that source. Even with no change, we know whether AgentWire checked.
