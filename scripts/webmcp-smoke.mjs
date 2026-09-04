@@ -54,10 +54,26 @@ async function invoke(toolName, input) {
   console.log(`\n=== ${toolName} ===\n→ WebMCP.invokeTool { frameId, toolName: "${toolName}", input: ${JSON.stringify(input)} }\n← ${ev.status}: ${out.slice(0, 1400)}${out.length > 1400 ? ` …[${out.length} chars]` : ""}`);
   return ev.output;
 }
+async function expectBad(toolName, input, field) {
+  const out = await invoke(toolName, input);
+  if (out?.ok !== false || !String(out.error || "").includes(field) || !out.fix) {
+    console.error(`${toolName} accepted invalid ${field}:`, JSON.stringify(input), JSON.stringify(out));
+    b.close(); process.exit(1);
+  }
+}
 const list = await invoke("list_changes", { since_hours: 168 });
 await invoke("check_dependency", { name: "neon" });
 await invoke("check_dependency", { name: "claude-sonnet-4-5" });
 await invoke("get_diff", { diff_id: list.changes?.[0]?.diff_id ?? 1 });
+await expectBad("list_changes", { since_hours: 720, severity: "breaking&limit=1" }, "severity");
+await expectBad("list_changes", { severity: ["breaking"] }, "severity");
+await expectBad("list_changes", { since_hours: "168" }, "since_hours");
+await expectBad("list_changes", { since_hours: 1.5 }, "since_hours");
+await expectBad("list_changes", { since_hours: 721 }, "since_hours");
+await expectBad("check_dependencies", { deps: ["neon"], since_hours: false }, "since_hours");
+await expectBad("get_diff", { diff_id: 1e20 }, "diff_id");
+await expectBad("get_diff", { diff_id: "1" }, "diff_id");
+await expectBad("get_diff", { diff_id: true }, "diff_id");
 await invoke("list_sources", { kind: "mcp_server" });
 const missingBatchInput = await invoke("check_dependencies", {});
 if (missingBatchInput?.ok !== false) { console.error("check_dependencies missing-input case did not return ok:false"); b.close(); process.exit(1); }
