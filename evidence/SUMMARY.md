@@ -16,9 +16,11 @@ All numbers below come from files in this directory. Backend tables were read wi
 
 Breaking changes on record: #19 GitHub MCP Server (official) — Tool list changed: +0/-2 (e.g. - per_page: Results per page for pagination (default: 30, m; #30 Google Gemini API — Deprecations page updated: Gemini 3.8 Flash is now available. Try it out..
 
-## WebMCP tools, invoked by Chrome over the DevTools `WebMCP` domain (`clean_clone_run.txt`)
+## WebMCP tools, invoked by Chrome over the DevTools `WebMCP` domain
 
-Fresh clone of `main`, no install step, Chrome 152.0.7977.77, Node 22.22.3. All four tools registered on both origins; the three read tools were invoked (the write tool was skipped so nothing was inserted).
+The current production proof is `smoke_live_2026-09-03_final.txt`: Chrome 152.0.7977.77 registered all six tools and invoked all five read tools. The write tool received only an invalid-address validation check; the valid write path was skipped, so nothing was inserted. `clean_clone_run.txt` is historical proof of the original four-tool version.
+
+Historical latency table from `clean_clone_run.txt`:
 
 | Tool | Local (`127.0.0.1:8787`) | Production (`agentwire.web.app`) |
 |---|---|---|
@@ -28,14 +30,15 @@ Fresh clone of `main`, no install step, Chrome 152.0.7977.77, Node 22.22.3. All 
 
 Latency is the page-side time from `execute()` entry to return (PostgREST round trip included), as logged in the Agent tools panel. Both runs exited 0.
 
-## Demo video (`../demo/output/timeline-agent.json`, YouTube page metadata)
+## Current demo video
 
 | Item | Value |
 |---|---|
-| Rendered length | 91.0 s |
-| YouTube `lengthSeconds` | 91 (checked 2026-09-03 19:45 PDT) |
-| Visibility | unlisted, not private (`isUnlisted: true`, `isPrivate: false`) |
-| Agent model in the recording | gemini-3.8-flash (`../demo/captures/marks-agent.json`) |
-| Tool calls in the recording | 6 across 4 questions |
+| Public URL | https://youtu.be/z_lRFhLq9eQ |
+| Rendered length | 170.147 s (2:50) |
+| Exact uploaded MP4 SHA-256 | `3f942183eed221012ac781e369758754446c664d91009d5cc4dce101dec0e280` |
+| Visibility | Public; public watch page and playback verified 2026-09-04 |
+| Agent proof | Real Gemini agent invokes `check_dependencies`, `get_diff`, `check_dependency`, `list_sources` and `list_changes` |
+| Write boundary | `watch_dependencies` is explained but not invoked; Gemini asks for the missing email and confirmation |
 
 ![Changes by day and severity](changes_chart.png)

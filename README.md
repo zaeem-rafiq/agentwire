@@ -2,7 +2,7 @@
 
 **One line:** a daily diff of the MCP servers, model APIs and SDKs your agents depend on, exposed to the browser agent through six [WebMCP](https://developer.chrome.com/docs/ai/webmcp) tools on the same page a person uses.
 
-Live: **https://agentwire.web.app** · Demo video (1:31): **https://youtu.be/JBnvbj1fF-U** · Write-up: [SUBMISSION.md](SUBMISSION.md) · Evidence: [evidence/SUMMARY.md](evidence/SUMMARY.md)
+Live: **https://agentwire.web.app** · Demo video (2:50): **https://youtu.be/z_lRFhLq9eQ** · Write-up: [SUBMISSION.md](SUBMISSION.md) · Evidence: [evidence/SUMMARY.md](evidence/SUMMARY.md)
 
 ## Evidence (all figures trace to files in `evidence/`)
 
@@ -14,7 +14,7 @@ Live: **https://agentwire.web.app** · Demo video (1:31): **https://youtu.be/JBn
 | Current production browser proof | 6/6 tools registered; five read tools plus structured-error cases invoked by Chrome, exit 0 | `evidence/smoke_live_2026-09-03_final.txt` |
 | Historical browser proof before the final two read tools | 4/4 registered; 3 read tools invoked on a fresh clone and on production, exit 0 | `evidence/clean_clone_run.txt` |
 | Historical tool latency (original three read tools; page-side, PostgREST included) | 93–195 ms per call | `evidence/SUMMARY.md` |
-| Demo video | 91 s · real Gemini agent (gemini-3.8-flash) · 6 tool calls over 4 questions | `demo/captures/marks-agent.json` |
+| Demo video | 2:50 · real Gemini agent · all five read tools exercised; consent-gated write explained but not invoked | [published video](https://youtu.be/z_lRFhLq9eQ) |
 
 ![Changes detected per daily run, by severity](evidence/changes_chart.png)
 
@@ -68,7 +68,7 @@ The six tools use the same loaded data and `q()` PostgREST helper as the human U
 
 ## Prior work vs. work in the submission window
 
-Everything in this repository's git history is inside the challenge window: the first commit is 2026-09-02 10:38 CDT ([evidence/git_history.txt](evidence/git_history.txt)). The Supabase project itself was created 2026-09-01 22:36 UTC (project metadata) and the diff engine, schema and original human page were applied the same day (comment at the top of `supabase/migrations/0001_init.sql`; first snapshots 22:53 UTC, first run 23:03 UTC), so the whole project post-dates the Aug 25 window start and is described in the [SUBMISSION.md](SUBMISSION.md) write-up as the pre-existing base. The WebMCP work — six current tools, the Agent tools panel, the Mine filter, the `scripts/webmcp-smoke.mjs` proof, and the real-agent demo pipeline in `demo/` — is the challenge submission. The frozen demo shows the original four-tool version.
+Everything in this repository's git history is inside the challenge window: the first commit is 2026-09-02 10:38 CDT ([evidence/git_history.txt](evidence/git_history.txt)). The Supabase project itself was created 2026-09-01 22:36 UTC (project metadata) and the diff engine, schema and original human page were applied the same day (comment at the top of `supabase/migrations/0001_init.sql`; first snapshots 22:53 UTC, first run 23:03 UTC), so the whole project post-dates the Aug 25 window start and is described in the [SUBMISSION.md](SUBMISSION.md) write-up as the pre-existing base. The WebMCP work — six current tools, the Agent tools panel, the Mine filter, the `scripts/webmcp-smoke.mjs` proof, and the real-agent demo pipeline in `demo/` — is the challenge submission. The current demo shows the six-tool version.
 
 ## WebMCP tools
 

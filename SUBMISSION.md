@@ -2,7 +2,7 @@
 
 Live site: **https://agentwire.web.app** (Firebase Hosting, Google Cloud project `agentwire-webmcp`, deployed 2026-09-02)
 Repo: **https://github.com/zaeem-rafiq/agentwire** (public, MIT)
-Video: **https://youtu.be/JBnvbj1fF-U** (1:31; currently *unlisted* — the rules say "publicly posted to YouTube", so flip it to Public in YouTube Studio)
+Video: **https://youtu.be/z_lRFhLq9eQ** (2:50; public)
 
 Works in stock Google Chrome 149+ (origin-trial token is deployed; no flag needed on this origin) and in ChatGPT's browser (tools appear under *Site tools*).
 
@@ -52,7 +52,7 @@ The WebMCP docs disagreed on the namespace (`document.modelContext` vs older `na
 
 ### Prior work vs. work in the submission window
 
-The diff engine (`supabase/functions/run/index.ts`), schema (`supabase/migrations/0001_init.sql`, applied 2026-09-01 per its header comment; the Supabase project was created 2026-09-01 22:36 UTC and took its first snapshots at 22:53 UTC, after the Aug 25 window start), the 48-source list and the original human page were built first. The WebMCP work is everything that touches an agent: the six current tools registered on `document.modelContext`, the UI mirroring and Mine filter, the Agent tools panel with its call log, the `scripts/webmcp-smoke.mjs` proof that has Chrome itself invoke the tools, and the real-agent demo pipeline in `demo/`. The frozen demo records the original four-tool version. All of it is in this repository's dated commit history, which starts 2026-09-02 10:38 CDT (`evidence/git_history.txt`).
+The diff engine (`supabase/functions/run/index.ts`), schema (`supabase/migrations/0001_init.sql`, applied 2026-09-01 per its header comment; the Supabase project was created 2026-09-01 22:36 UTC and took its first snapshots at 22:53 UTC, after the Aug 25 window start), the 48-source list and the original human page were built first. The WebMCP work is everything that touches an agent: the six current tools registered on `document.modelContext`, the UI mirroring and Mine filter, the Agent tools panel with its call log, the `scripts/webmcp-smoke.mjs` proof that has Chrome itself invoke the tools, and the real-agent demo pipeline in `demo/`. The current demo records the six-tool version. All of it is in this repository's dated commit history, which starts 2026-09-02 10:38 CDT (`evidence/git_history.txt`).
 
 ### Limitations
 
@@ -65,25 +65,28 @@ The diff engine (`supabase/functions/run/index.ts`), schema (`supabase/migration
 
 ## See a real agent drive it
 
-The demo video is one continuous take on the production site with a real agent on screen: Gemini 3.8 Flash reads the tool schemas the page registered on `document.modelContext`, picks tools by function calling, and every call is invoked through Chrome's WebMCP DevTools channel while the page reacts. The recording predates the two batch tools, so it shows the original four-tool surface; the live site now registers six. The harness is in the repo as `demo/capture-agent.mjs` (Node 22 + Chrome 149+, no npm install) and `demo/README.md` explains the pipeline. The Agent tools panel on the live site logs any agent's calls the same way, so a judge in ChatGPT's browser — or in Chrome 149+, which needs no flag on this origin because it carries a WebMCP origin-trial token — sees the same log.
+The demo video shows the production site with a real Gemini agent on screen. Gemini reads the six tool schemas the page registered on `document.modelContext` and exercises all five read tools through Chrome's WebMCP DevTools channel while the page reacts. When asked to save the audited list without an email, it does not invoke consent-gated `watch_dependencies`; it asks for the missing confirmation instead. The Agent tools panel on the live site logs any agent's calls the same way, so a judge in ChatGPT's browser — or in Chrome 149+, which needs no flag on this origin because it carries a WebMCP origin-trial token — sees the same log.
 
 ---
 
-## 2. Demo video — what's in the cut (1:31, https://youtu.be/JBnvbj1fF-U)
+## 2. Demo video — what's in the cut (2:50, https://youtu.be/z_lRFhLq9eQ)
 
-Produced by `demo/capture-agent.mjs` + `demo/render-agent.sh` (see `demo/README.md`): one continuous take on the production site with a real agent on screen. Narration is Host/Expert (Chirp 3 HD Kore + Iapetus).
+The finalist cut uses one production capture with model waits removed, plus title/proof cards, Host/Expert narration and captions.
 
-| Time | What's on screen | Narration (`demo/narration/*.txt`) |
+| Time | What's on screen | Proof point |
 |---|---|---|
-| 0:00–0:15 | Cold-open card over the page: "Agent dependencies change silently." | Host: It's Friday and I'm about to bump the Neon MCP server. Did anything change, and does it break us? Expert: Ask the agent in your browser. This page registers four WebMCP tools, so it answers from the same data you see on screen. |
-| 0:15–0:31 | Chat pane (left) types the question; Gemini 3.8 Flash picks `check_dependency`; the call chip shows args + ms; the Agent-tools panel logs it; the answer cites #11 and #12. | Host: I ask in plain English. Expert: The agent reads the tool schemas the page registered, picks check dependency, and Chrome routes the call through WebMCP… |
-| 0:31–0:42 | "Show me the changelog diff." → `get_diff(12)`; the row highlights and opens on the page. | Host: Show me the diff. Expert: Get diff returns the stored lines for that change, and the row opens on the page as the agent reads it. |
-| 0:42–1:00 | "Zoom out…" → `list_changes` at breaking + notice; answer names the GitHub MCP breaking change and the notices. | Host: Now the wider picture. Expert: List changes across all forty-eight sources… so the person can verify every claim. |
-| 1:00–1:14 | "Watch Neon and claude-sonnet-4-5, email demo@…" → `watch_dependencies`; the form fills in and confirms. | Host: And subscribe me. Expert: The one write… the form fills in to confirm what was saved. |
-| 1:14–1:22 | Cursor clicks ▶ sample on `check_dependency`; a HUMAN entry lands beside the AGENT ones. | Host: Can I do that myself? Expert: One click, same function, same log, tagged human beside agent. |
-| 1:22–1:31 | Close card: "The agent is on the page." | Expert: AgentWire. Dependency watch for production agents, with the agent on the page. MIT on GitHub. |
+| 0:00–0:19 | Opening card over the production page. | 119 URLs, 48 sources, six WebMCP tools: five read and one write. |
+| 0:19–0:43 | Gemini audits a pasted config with `check_dependencies`; the page switches to Mine. | Three dependencies matched; recent changes and breaking counts share the page with the agent. |
+| 0:43–0:59 | `get_diff(19)` opens the stored GitHub MCP diff. | The evidence shows the `per_page` → `perPage` parameter change. |
+| 0:59–1:14 | `check_dependency` checks GitHub MCP directly. | The result includes recent changes and last-fetch health. |
+| 1:14–1:31 | `list_sources` shows the MCP server catalog. | Coverage is explicit: 42 MCP servers, not private dependencies. |
+| 1:31–1:53 | `list_changes` filters to breaking changes from the last 168 hours. | The agent surfaces both breaking results and keeps their sources visible. |
+| 1:53–2:10 | The person asks Gemini to save the audited list without providing an email. | Gemini does not invoke `watch_dependencies`; it asks for the missing email and confirmation. |
+| 2:10–2:21 | A person runs the same tool implementation from the panel. | HUMAN and AGENT calls appear together in the visible log. |
+| 2:21–2:42 | Proof card over the production capture. | Six page-registered schemas, Chrome WebMCP invocation, shared page state; no AgentWire API key, separate MCP server or scraping. |
+| 2:42–2:50 | Close card. | AgentWire puts the agent on the same page as the evidence and the person deciding. |
 
-How it's real: the chat pane is injected for the recording, but the agent is a live Gemini function-calling loop whose tool declarations come from the page's own `registerTool` schemas, and every call is invoked through Chrome's `WebMCP.invokeTool` DevTools command — the same channel a browser agent uses. Model wait time is cut from the timeline; nothing else is edited.
+How it's real: the chat pane is injected for the recording, but the agent is a live Gemini function-calling loop whose tool declarations come from the page's own `registerTool` schemas, and every call is invoked through Chrome's `WebMCP.invokeTool` DevTools command — the same channel a browser agent uses. Model wait time is cut from the timeline; title/proof cards and captions make the evidence legible.
 
 ---
 
@@ -91,7 +94,7 @@ How it's real: the chat pane is injected for the recording, but the agent is a l
 
 1. **Deployed.** https://agentwire.web.app is live on Firebase Hosting. Redeploy after any site change with `firebase deploy --only hosting`.
 2. **Origin trial token: done.** Registered for https://agentwire.web.app (expires 2026-11-16) and deployed; the earlier stock-Chrome check verified that `document.modelContext` was present without flags. The final production smoke verified all six tools in Chrome 152 with WebMCP enabled (`evidence/smoke_live_2026-09-03_final.txt`).
-3. **Record and upload the demo video** (< 3 min, audio narration above) to YouTube as public/unlisted-public.
+3. **Demo uploaded.** https://youtu.be/z_lRFhLq9eQ is public and runs 2:50.
 4. **Devpost form** at https://webmcp.devpost.com: title, tagline, the description in §1, the live URL, repo URL, video URL, and screenshots (`docs/agent-panel.png`, `docs/agent-form.png`). Devpost's page shows **Deadline: Sep 4 2026 @ 1:00 AM PDT** (the Official Rules text still says Sep 3 1:00 PM PT); the entry is submitted and stays editable until then.
 5. **GitHub "About" license badge.** GitHub detects `LICENSE` automatically; confirm "MIT license" shows in the repo sidebar (rules require it visible there).
 6. **Optional:** delete the test subscription row (`webmcp-test@example.com`, source `webmcp`) from `dependency_lists` in Supabase — it was inserted by the recorded test run.
