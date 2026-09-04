@@ -330,6 +330,28 @@ document.getElementById("f").addEventListener("submit", async e => {
    Registers six tools on document.modelContext (Chrome 149+ origin trial / chrome://flags/#enable-webmcp-testing,
    ChatGPT's browser). Each tool runs the same PostgREST queries the human UI uses, and mirrors what it did
    back into the UI so a person watching the page sees the agent's work. */
+// Chrome does not enforce a tool's inputSchema, so every value an agent sends is re-validated here before it
+// reaches a query string. Without this an enum value can carry extra PostgREST parameters (e.g. severity
+// "breaking&limit=1"), which would silently truncate an answer the person is relying on.
+const SEVERITIES = ["breaking", "notice", "info"], KINDS = ["mcp_server", "model_api", "spec"];
+const badInput = (error, fix) => ({ ok: false, error, fix });
+function okEnum(value, allowed, field) {
+  if (value === undefined || value === null || value === "") return null;
+  const v = String(value);
+  return allowed.includes(v) ? v : badInput(`${field} must be one of ${allowed.join(", ")}`, `Call again with a valid ${field}, or omit it.`);
+}
+function okHours(value, field = "since_hours") {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return badInput(`${field} must be a number of hours`, "Pass an integer between 1 and 720, or omit it for 168.");
+  return Math.min(720, Math.max(1, Math.round(n)));
+}
+function okId(value, field = "diff_id") {
+  const n = Number(value);
+  if (!Number.isInteger(n) || n < 1) return badInput(`${field} must be a positive integer`, "Use a diff_id returned by list_changes or check_dependency.");
+  return n;
+}
+const isBad = v => v && typeof v === "object" && v.ok === false;
+
 const TOOLS = [
   {
     name: "list_changes",
@@ -343,12 +365,15 @@ const TOOLS = [
     short: "Recent detected changes, newest first. Filter by window, severity, source kind.",
     sample: { since_hours: 168, severity: "notice" },
     async execute({ since_hours = 168, severity, kind } = {}) {
-      const since = new Date(Date.now() - since_hours * 3600e3).toISOString();
+      const hours = okHours(since_hours); if (isBad(hours)) return hours;
+      const sev = okEnum(severity, SEVERITIES, "severity"); if (isBad(sev)) return sev;
+      const knd = okEnum(kind, KINDS, "kind"); if (isBad(knd)) return knd;
+      const since = new Date(Date.now() - hours * 3600e3).toISOString();
       let path = `diffs?select=id,detected_at,source_id,url,category,severity,summary,added_lines,removed_lines&detected_at=gte.${since}&order=detected_at.desc&limit=100`;
-      if (severity) path += `&severity=eq.${severity}`;
-      if (kind) { const ids = Object.values(SOURCES).filter(s => s.kind === kind).map(s => s.id); path += `&source_id=in.(${ids.join(",")})`; }
+      if (sev) path += `&severity=eq.${sev}`;
+      if (knd) { const ids = Object.values(SOURCES).filter(s => s.kind === knd).map(s => s.id); path += `&source_id=in.(${ids.join(",")})`; }
       const rows = await q(path);
-      if (severity) setFilter(severity); else setFilter("all");
+      setFilter(sev || "all");
       return { since, count: rows.length, changes: rows.map(shapeDiff), hint: "Call get_diff({diff_id}) for the line-level diff of any change; check_dependency({name}) for one dependency's history and health." };
     },
   },
@@ -409,7 +434,8 @@ const TOOLS = [
     async execute({ deps, manifest, since_hours = 168 } = {}) {
       const names = dedupe([...(Array.isArray(deps) ? deps : []), ...extractDeps(manifest || "")]).slice(0, 100);
       if (!names.length) return { ok: false, error: "deps or manifest must contain at least one dependency", fix: "Pass deps as an array of names, manifest as raw text, or both." };
-      const since = new Date(Date.now() - since_hours * 3600e3).toISOString();
+      const hours = okHours(since_hours); if (isBad(hours)) return hours;
+      const since = new Date(Date.now() - hours * 3600e3).toISOString();
       const ranked = names.map(query => ({ query, best: matchSources(query)[0] })).map(x => ({ ...x, best: x.best && x.best.score >= 0.4 ? x.best : null }));
       const ids = dedupe(ranked.filter(x => x.best).map(x => x.best.source.id));
       const rows = ids.length ? await q(`diffs?select=id,detected_at,source_id,url,category,severity,summary,added_lines,removed_lines&source_id=in.(${ids.join(",")})&detected_at=gte.${since}&order=detected_at.desc&limit=200`) : [];
@@ -440,7 +466,8 @@ const TOOLS = [
     short: "The stored line diff for one change, by diff_id.",
     sample: () => ({ diff_id: DIFFS[0]?.id ?? 1 }),
     async execute({ diff_id }) {
-      const rows = await q(`diffs?select=id,detected_at,source_id,url,category,severity,summary,unified_diff,added_lines,removed_lines&id=eq.${+diff_id}`);
+      const id = okId(diff_id); if (isBad(id)) return id;
+      const rows = await q(`diffs?select=id,detected_at,source_id,url,category,severity,summary,unified_diff,added_lines,removed_lines&id=eq.${id}`);
       if (!rows.length) return { diff_id, found: false, message: "No change with that id." };
       const d = rows[0];
       revealDiff(d.id);
