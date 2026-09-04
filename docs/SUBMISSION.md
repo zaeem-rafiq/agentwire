@@ -6,7 +6,7 @@ Form: https://webmcp.devpost.com → "Manage submission". Deadline shown on the 
 |---|---|
 | **Project name** | AgentWire |
 | **Tagline** (≤ 60 chars) | Dependency watch for AI agents, with the agent on the page |
-| **Short description** | AgentWire diffs 119 URLs across 48 MCP servers, model APIs and SDKs every day. Four WebMCP tools let the agent in your browser ask "did anything I depend on change, and is it breaking?", read the diff, and subscribe you, on the same page you see, with every call logged live. |
+| **Short description** | AgentWire diffs 119 URLs across 48 MCP servers, model APIs and SDKs every day. Four WebMCP tools let the agent in your browser ask "did anything I depend on change, and is it breaking?", read the diff, and save a dependency list that immediately filters the page, with every call logged live. Alert delivery ships with the pilot. |
 | **Long description / About the project** | Paste `SUBMISSION.md` §1 (sections *What it is* through *Limitations*). It already covers the four required topics: WebMCP fit, UX improvement, human+agent collaboration, implementation. |
 | **Built with** (tags) | webmcp, javascript, html, supabase, postgresql, postgrest, deno, firebase-hosting, gemini, chrome-devtools-protocol, pg_cron |
 | **Live URL** | https://agentwire.web.app |

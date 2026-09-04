@@ -163,8 +163,8 @@
   <section>
     <div class="two">
       <div class="card" id="form-card">
-        <h3>Get alerted on the dependencies you actually use</h3>
-        <p>Paste your MCP servers, model IDs and SDKs. When one of them changes, we email you the diff the same morning. Free while we're in the pilot.</p>
+        <h3>Check the dependencies you actually use</h3>
+        <p>Paste your MCP servers, model IDs and SDKs. We match them against the 48 watched sources and show what changed, right here. Alert delivery ships with the pilot.</p>
         <form id="f">
           <label>Work email</label>
           <input type="email" name="email" required placeholder="you@company.com">
@@ -173,15 +173,15 @@
           <div class="picks" id="picks"></div>
           <label>If you got a Slack message the morning one of these changed, with the diff — what would you do with it?</label>
           <textarea name="workflow" placeholder="e.g. pin the previous version in CI and open a ticket / re-run our eval suite / probably ignore it unless it's a major"></textarea>
-          <div style="margin-top:14px"><button class="btn" type="submit">Watch my dependencies</button></div>
+          <div style="margin-top:14px"><button class="btn" type="submit">Save and check my list</button></div>
           <div id="f-msg"></div>
         </form>
       </div>
       <div class="card">
         <h3>Private watch list</h3>
-        <p>Your own dependency list, alerts to Slack or email the morning something changes, diff included. Cancel any time.</p>
+        <p>Private Slack and email alerts are planned for the pilot. For now, save a list and see its changes on this page.</p>
         <div class="price" id="price">$29 <small>/ month</small></div>
-        <p class="muted">Card required. If nobody pays for this, we'll shut it down and say so.</p>
+        <p class="muted">Planned pilot price. Billing is not open yet.</p>
         <div id="pay"></div>
       </div>
     </div>
@@ -289,9 +289,7 @@ async function load(){
   // stripe
   const c = Object.fromEntries((cfg || []).map(x => [x.key, x.value]));
   if (c.price) document.getElementById("price").innerHTML = esc(c.price).replace(/\/(.*)$/, "<small>/ $1</small>");
-  document.getElementById("pay").innerHTML = c.stripe_link
-    ? `<a class="btn accent" href="${esc(c.stripe_link)}" target="_blank" rel="noopener">Start private watch list</a>`
-    : `<button class="btn accent" disabled>Checkout opens this week</button><div class="muted" style="margin-top:8px">Submit your list on the left and you'll get the link first.</div>`;
+  document.getElementById("pay").innerHTML = `<button class="btn accent" disabled>Planned · not open yet</button><div class="muted" style="margin-top:8px">Submit your list on the left to be told when it opens.</div>`;
   render();
 }
 
@@ -450,14 +448,14 @@ const TOOLS = [
   },
   {
     name: "watch_dependencies",
-    description: "Subscribe an email address to AgentWire alerts for a list of dependencies (MCP servers, packages, model IDs, APIs). The morning one of them changes, the diff is emailed. Only call this after the person has confirmed the email and the list — it writes to the database.",
+    description: "Saves the list and filters the page to those dependencies' changes. Alert delivery ships with the pilot; call check_dependencies any time for the current state. Only call this after the person has confirmed the email and the list — it writes to the database.",
     inputSchema: { type: "object", properties: {
-      email: { type: "string", format: "email", minLength: 5, maxLength: 200, description: "Where to send alerts." },
+      email: { type: "string", format: "email", minLength: 5, maxLength: 200, description: "Email to save with this dependency list." },
       deps: { type: "array", items: { type: "string", minLength: 1 }, minItems: 1, maxItems: 100, description: "Dependencies to watch, one string each." },
       workflow: { type: "string", description: "Optional: what the person would do with an alert (helps us shape the product)." },
     }, required: ["email", "deps"], additionalProperties: false },
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false },
-    short: "Subscribe an email to alerts for a list of dependencies. Writes a row.",
+    short: "Save a dependency list and filter the page. Writes a row.",
     sample: { email: "you@example.com", deps: ["@modelcontextprotocol/server-filesystem", "claude-sonnet-4-5"], workflow: "pin previous version in CI, open a ticket" },
     async execute({ email, deps, workflow }) {
       deps = (deps || []).map(x => String(x).trim()).filter(Boolean).slice(0, 100);
@@ -467,9 +465,9 @@ const TOOLS = [
       catch (err) { return { ok: false, error: String(err.message || err), fix: "Retry once; if it fails again tell the person the save did not go through." }; }
       const { matched } = applyMyList(deps);
       const f = document.getElementById("f"); f.email.value = email; f.deps.value = deps.join("\n"); if (workflow) f.workflow.value = workflow;
-      document.getElementById("f-msg").innerHTML = `<div class="ok">Saved by your agent: ${deps.length} dependenc${deps.length === 1 ? "y" : "ies"} for ${esc(email)}.</div>`;
+      document.getElementById("f-msg").innerHTML = `<div class="ok">Saved by your agent. ${matched} of ${deps.length} are watched; the page now shows their changes.</div>`;
       document.getElementById("form-card").scrollIntoView({ behavior: "smooth", block: "center" });
-      return { ok: true, email, deps, watched_count: deps.length, watched_matches: matched, message: "Saved. Alerts go to this email the morning one of these changes." };
+      return { ok: true, email, deps, watched_count: deps.length, watched_matches: matched, message: "Saved. The page now shows changes for this list." };
     },
   },
 ];
@@ -600,7 +598,7 @@ async function registerWebMCP() {
     catch (e) { console.warn("registerTool failed", t.name, e); }
   }
   st.className = "st on"; stt.textContent = `${n} tools registered`;
-  note.innerHTML = `Registered on <code>document.modelContext</code>. An agent in this browser can now query and subscribe using the same data you see above — every call shows up here as it happens.`;
+  note.innerHTML = `Registered on <code>document.modelContext</code>. An agent in this browser can now query and save a list using the same data you see above — every call shows up here as it happens.`;
   window.dispatchEvent(new CustomEvent("agentwire:webmcp-ready", { detail: { tools: n } }));
 }
 $("agent-h").addEventListener("click", () => { const a = $("agent"); a.classList.toggle("min"); $("agent-tg").textContent = a.classList.contains("min") ? "show" : "hide"; });
