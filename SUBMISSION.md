@@ -4,7 +4,7 @@ Live site: **https://agentwire.web.app** (Firebase Hosting, Google Cloud project
 Repo: **https://github.com/zaeem-rafiq/agentwire** (public, MIT)
 Video: **https://youtu.be/JBnvbj1fF-U** (unlisted; flip to Public in YouTube Studio if you prefer)
 
-Works in Google Chrome 149+ with WebMCP enabled (`chrome://flags/#enable-webmcp-testing`, or the origin-trial token) and in ChatGPT's browser (tools appear under *Site tools*).
+Works in stock Google Chrome 149+ (origin-trial token is deployed; no flag needed on this origin) and in ChatGPT's browser (tools appear under *Site tools*).
 
 ---
 
@@ -64,7 +64,7 @@ How it's real: the chat pane is injected for the recording, but the agent is a l
 ## 3. Only you can do these
 
 1. **Deployed.** https://agentwire.web.app is live on Firebase Hosting. Redeploy after any site change with `firebase deploy --only hosting`.
-2. **Origin trial token (optional but recommended).** Register the production origin at https://developer.chrome.com/origintrials/#/register_trial/4163014905550602241 (WebMCP trial, Chrome 149+), paste the token into the `<meta http-equiv="origin-trial">` slot at the top of `site/index.html`, redeploy. Without it the page still works for judges who enable `chrome://flags/#enable-webmcp-testing` and in ChatGPT's browser.
+2. **Origin trial token: done.** Registered for https://agentwire.web.app (expires 2026-11-16) and deployed; verified in stock Chrome 152 with no flags that `document.modelContext` is present and the four tools register.
 3. **Record and upload the demo video** (< 3 min, audio narration above) to YouTube as public/unlisted-public.
 4. **Devpost form** at https://webmcp.devpost.com: title, tagline, the description in §1, the live URL, repo URL, video URL, and screenshots (`docs/agent-panel.png`, `docs/agent-form.png`). Deadline **Sept 3 2026, 1:00 PM PDT**.
 5. **GitHub "About" license badge.** GitHub detects `LICENSE` automatically; confirm "MIT license" shows in the repo sidebar (rules require it visible there).
