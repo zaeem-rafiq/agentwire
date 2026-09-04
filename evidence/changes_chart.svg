@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="360" font-family="-apple-system,Helvetica,Arial,sans-serif" font-size="13">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="60" y="28" font-size="16" font-weight="600" fill="#1c1b19">Changes detected per daily run, by severity</text>
+<text x="60" y="46" fill="#5c5954">25 changes · 119 URLs / 48 sources · baseline Sept 1 2026 · evidence/backend_diffs.json</text>
+<line x1="60" x2="690" y1="300.0" y2="300.0" stroke="#e6e4df"/><text x="52" y="304.0" text-anchor="end" fill="#8a867f">0</text>
+<line x1="60" x2="690" y1="240.0" y2="240.0" stroke="#e6e4df"/><text x="52" y="244.0" text-anchor="end" fill="#8a867f">5</text>
+<line x1="60" x2="690" y1="180.0" y2="180.0" stroke="#e6e4df"/><text x="52" y="184.0" text-anchor="end" fill="#8a867f">10</text>
+<line x1="60" x2="690" y1="120.0" y2="120.0" stroke="#e6e4df"/><text x="52" y="124.0" text-anchor="end" fill="#8a867f">15</text>
+<line x1="60" x2="690" y1="60.0" y2="60.0" stroke="#e6e4df"/><text x="52" y="64.0" text-anchor="end" fill="#8a867f">20</text>
+<rect x="190.0" y="288.0" width="120" height="12.0" fill="#4b5563"/>
+<rect x="190.0" y="216.0" width="120" height="72.0" fill="#b45309"/>
+<text x="250.0" y="256.0" text-anchor="middle" fill="#fff" font-weight="600">6</text>
+<text x="250.0" y="320" text-anchor="middle" fill="#1c1b19">2026-09-02</text><text x="250.0" y="338" text-anchor="middle" fill="#8a867f">7 total</text>
+<rect x="440.0" y="240.0" width="120" height="60.0" fill="#4b5563"/>
+<text x="500.0" y="274.0" text-anchor="middle" fill="#fff" font-weight="600">5</text>
+<rect x="440.0" y="108.0" width="120" height="132.0" fill="#b45309"/>
+<text x="500.0" y="178.0" text-anchor="middle" fill="#fff" font-weight="600">11</text>
+<rect x="440.0" y="84.0" width="120" height="24.0" fill="#b91c1c"/>
+<text x="500.0" y="100.0" text-anchor="middle" fill="#fff" font-weight="600">2</text>
+<text x="500.0" y="320" text-anchor="middle" fill="#1c1b19">2026-09-03</text><text x="500.0" y="338" text-anchor="middle" fill="#8a867f">18 total</text>
+<rect x="490" y="18" width="12" height="12" fill="#b91c1c"/><text x="507" y="29" fill="#5c5954">breaking 2</text>
+<rect x="570" y="18" width="12" height="12" fill="#b45309"/><text x="587" y="29" fill="#5c5954">notice 17</text>
+<rect x="650" y="18" width="12" height="12" fill="#4b5563"/><text x="667" y="29" fill="#5c5954">info 6</text>
+</svg>
