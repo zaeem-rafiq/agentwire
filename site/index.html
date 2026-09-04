@@ -148,6 +148,7 @@
       <span class="chip" data-f="breaking">Breaking</span>
       <span class="chip" data-f="notice">Notice</span>
       <span class="chip" data-f="info">Info</span>
+      <button class="chip" data-f="mine" id="chip-mine" hidden>Mine</button>
       <span style="flex:1"></span>
       <span class="muted" id="count"></span>
     </div>
@@ -219,17 +220,21 @@ async function q(path, opts = {}) {
   return t ? JSON.parse(t) : null;
 }
 let DIFFS = [], SOURCES = {}, WATCHES = [], LAST_RUN = null, filter = "all";
+let MY_IDS = new Set(), MY_NAMES = [];
 
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const ago = iso => { const m = (Date.now() - new Date(iso)) / 60000; if (m < 60) return Math.max(1, Math.round(m)) + "m ago"; if (m < 1440) return Math.round(m/60) + "h ago"; return Math.round(m/1440) + "d ago"; };
 const shortUrl = u => u.replace(/^https?:\/\/(raw\.githubusercontent\.com\/|registry\.npmjs\.org\/|pypi\.org\/pypi\/)?/, "");
 
 function render(){
-  const rows = DIFFS.filter(d => filter === "all" || d.severity === filter);
+  const rows = DIFFS.filter(d => filter === "mine" ? MY_IDS.has(d.source_id) : filter === "all" || d.severity === filter);
   document.getElementById("count").textContent = rows.length ? rows.length + " change" + (rows.length>1?"s":"") + " · last 30 days" : "";
   const tb = document.getElementById("rows");
   if (!rows.length){
-    tb.innerHTML = `<tr><td colspan="5" class="empty"><b>${DIFFS.length ? "Nothing at this severity" : "No changes detected yet"}</b>${DIFFS.length ? "" : "Baselines were taken on Sept 1, 2026. The first diffs appear as upstreams publish."}</td></tr>`;
+    const empty = filter === "mine"
+      ? (MY_IDS.size ? "None of your listed dependencies changed in the last 30 days." : "None of your listed names match a watched source yet. list_sources shows what is watched.")
+      : (DIFFS.length ? "Nothing at this severity" : "No changes detected yet");
+    tb.innerHTML = `<tr><td colspan="5" class="empty"><b>${empty}</b>${filter !== "mine" && !DIFFS.length ? "Baselines were taken on Sept 1, 2026. The first diffs appear as upstreams publish." : ""}</td></tr>`;
     return;
   }
   tb.innerHTML = rows.map(d => {
@@ -250,7 +255,7 @@ function render(){
 async function load(){
   const since = new Date(Date.now() - 30*864e5).toISOString();
   const [sources, wc, diffs, runs, cfg] = await Promise.all([
-    q("sources?select=id,name,kind,meta&active=eq.true"),
+    q("sources?select=id,name,kind,repo_url,meta&active=eq.true"),
     q("watches?select=id,source_id,url&active=eq.true&limit=1000"),
     q("diffs?select=id,detected_at,source_id,url,category,severity,summary,unified_diff,added_lines,removed_lines&detected_at=gte." + since + "&order=detected_at.desc&limit=300"),
     q("runs?select=started_at,finished_at,watches_total,fetched_ok,changed,errors&order=started_at.desc&limit=1"),
@@ -291,6 +296,13 @@ async function load(){
 }
 
 function setFilter(f){ filter = f; document.querySelectorAll(".chip").forEach(x => x.classList.toggle("on", x.dataset.f === f)); render(); }
+function applyMyList(names) {
+  MY_NAMES = names;
+  MY_IDS = new Set(names.map(n => matchSources(n)[0]).filter(m => m && m.score >= 0.4).map(m => m.source.id));
+  const chip = document.getElementById("chip-mine"); chip.hidden = false; chip.textContent = `Mine (${MY_IDS.size})`;
+  setFilter("mine");
+  return { matched: MY_IDS.size, of: names.length };
+}
 document.querySelectorAll(".chip").forEach(ch => ch.addEventListener("click", () => setFilter(ch.dataset.f)));
 
 async function saveList({ email, deps, workflow, source }) {
@@ -313,7 +325,7 @@ document.getElementById("f").addEventListener("submit", async e => {
 
 
 /* ───────────────────────── WebMCP: the same data, exposed to agents ─────────────────────────
-   Registers four tools on document.modelContext (Chrome 149+ origin trial / chrome://flags/#enable-webmcp-testing,
+   Registers six tools on document.modelContext (Chrome 149+ origin trial / chrome://flags/#enable-webmcp-testing,
    ChatGPT's browser). Each tool runs the same PostgREST queries the human UI uses, and mirrors what it did
    back into the UI so a person watching the page sees the agent's work. */
 const TOOLS = [
@@ -366,6 +378,58 @@ const TOOLS = [
     },
   },
   {
+    name: "list_sources",
+    description: "List every source AgentWire watches (MCP servers, model APIs, spec/SDK/registry), with package names and how many URLs are diffed daily. Use it to learn the exact names check_dependency and check_dependencies will match.",
+    inputSchema: { type: "object", properties: {
+      kind: { type: "string", enum: ["mcp_server", "model_api", "spec"], description: "Only return sources of this kind." },
+    }, additionalProperties: false },
+    annotations: { readOnlyHint: true },
+    short: "Every watched source, with package names and URL counts.",
+    sample: { kind: "mcp_server" },
+    async execute({ kind } = {}) {
+      const list = Object.values(SOURCES).filter(s => !kind || s.kind === kind).sort((a, b) => a.name.localeCompare(b.name))
+        .map(s => ({ id: s.id, name: s.name, kind: s.kind, npm_package: s.meta?.npm_package || null, pypi_package: s.meta?.pypi_package || null,
+          repo_url: s.repo_url || null, urls_watched: WATCHES.filter(w => w.source_id === s.id).length }));
+      return { count: list.length, sources: list, hint: "check_dependency({name}) for one; check_dependencies({deps|manifest}) for many." };
+    },
+  },
+  {
+    name: "check_dependencies",
+    description: "Audit many dependencies at once. Pass deps (names) and/or manifest (the raw text of a package.json, mcp.json, requirements.txt). Returns, per dependency, whether AgentWire watches it, its changes in the window, and the breaking count. Use this first when you know the person's config; then get_diff for anything that matters.",
+    inputSchema: { type: "object", properties: {
+      deps: { type: "array", items: { type: "string", minLength: 1 }, minItems: 1, maxItems: 100, description: "Dependency names: packages, MCP servers, model IDs, APIs. Fuzzy." },
+      manifest: { type: "string", maxLength: 200000, description: "Raw text of a package.json, mcp.json, claude_desktop_config.json, requirements.txt or any list; names are extracted." },
+      since_hours: { type: "integer", minimum: 1, maximum: 720, default: 168, description: "Look-back window in hours (default 168)." },
+    }, additionalProperties: false },
+    annotations: { readOnlyHint: true },
+    short: "Audit a whole list or a pasted manifest → which deps are watched, what changed, how many breaking.",
+    sample: { manifest: '{"mcpServers":{"neon":{"command":"npx","args":["-y","@neondatabase/mcp-server-neon"]},"github":{"command":"npx","args":["-y","@modelcontextprotocol/server-github"]}},"dependencies":{"@anthropic-ai/sdk":"^0.60.0"}}' },
+    async execute({ deps, manifest, since_hours = 168 } = {}) {
+      const names = dedupe([...(Array.isArray(deps) ? deps : []), ...extractDeps(manifest || "")]).slice(0, 100);
+      if (!names.length) return { ok: false, error: "deps or manifest must contain at least one dependency", fix: "Pass deps as an array of names, manifest as raw text, or both." };
+      const since = new Date(Date.now() - since_hours * 3600e3).toISOString();
+      const ranked = names.map(query => ({ query, best: matchSources(query)[0] })).map(x => ({ ...x, best: x.best && x.best.score >= 0.4 ? x.best : null }));
+      const ids = dedupe(ranked.filter(x => x.best).map(x => x.best.source.id));
+      const rows = ids.length ? await q(`diffs?select=id,detected_at,source_id,url,category,severity,summary,added_lines,removed_lines&source_id=in.(${ids.join(",")})&detected_at=gte.${since}&order=detected_at.desc&limit=200`) : [];
+      applyMyList(names);
+      if (ranked[0]?.best) highlightSource(ranked[0].best.source.id);
+      return {
+        since,
+        checked: names.length,
+        matched: ranked.filter(x => x.best).length,
+        unmatched: ranked.filter(x => !x.best).map(x => x.query),
+        breaking: rows.filter(row => row.severity === "breaking").length,
+        results: ranked.map(({ query, best }) => ({
+          query,
+          match: best ? { id: best.source.id, name: best.source.name, kind: best.source.kind, confidence: +best.score.toFixed(2) } : null,
+          changes: best ? rows.filter(row => row.source_id === best.source.id).map(shapeDiff) : [],
+          breaking: best ? rows.filter(row => row.source_id === best.source.id && row.severity === "breaking").length : 0,
+        })),
+        hint: "get_diff({diff_id}) for the lines of any change. Unmatched names are not watched yet; list_sources shows what is.",
+      };
+    },
+  },
+  {
     name: "get_diff",
     description: "Return the stored line diff (removed lines prefixed '- ', added lines prefixed '+ ') for one detected change, by its diff_id from list_changes or check_dependency. Read the diff to judge whether a change actually affects you; classification is heuristic.",
     inputSchema: { type: "object", properties: { diff_id: { type: "integer", minimum: 1, description: "The id of a change." } }, required: ["diff_id"], additionalProperties: false },
@@ -393,13 +457,15 @@ const TOOLS = [
     sample: { email: "you@example.com", deps: ["@modelcontextprotocol/server-filesystem", "claude-sonnet-4-5"], workflow: "pin previous version in CI, open a ticket" },
     async execute({ email, deps, workflow }) {
       deps = (deps || []).map(x => String(x).trim()).filter(Boolean).slice(0, 100);
-      if (!deps.length) throw new Error("deps must contain at least one dependency");
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email))) throw new Error("email is not a valid address");
-      await saveList({ email, deps, workflow, source: "webmcp" });
+      if (!deps.length) return { ok: false, error: "deps must contain at least one dependency", fix: "Pass deps as an array of package, server or model names." };
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email))) return { ok: false, error: "email is not a valid address", fix: "Ask the person for their email and pass it as email." };
+      try { await saveList({ email, deps, workflow, source: "webmcp" }); }
+      catch (err) { return { ok: false, error: String(err.message || err), fix: "Retry once; if it fails again tell the person the save did not go through." }; }
+      const { matched } = applyMyList(deps);
       const f = document.getElementById("f"); f.email.value = email; f.deps.value = deps.join("\n"); if (workflow) f.workflow.value = workflow;
       document.getElementById("f-msg").innerHTML = `<div class="ok">Saved by your agent: ${deps.length} dependenc${deps.length === 1 ? "y" : "ies"} for ${esc(email)}.</div>`;
       document.getElementById("form-card").scrollIntoView({ behavior: "smooth", block: "center" });
-      return { ok: true, email, deps, watched_count: deps.length, message: "Saved. Alerts go to this email the morning one of these changes." };
+      return { ok: true, email, deps, watched_count: deps.length, watched_matches: matched, message: "Saved. Alerts go to this email the morning one of these changes." };
     },
   },
 ];
@@ -407,6 +473,33 @@ const TOOLS = [
 function shapeDiff(d) {
   const s = SOURCES[d.source_id] || {};
   return { diff_id: d.id, detected_at: d.detected_at, source_id: d.source_id, source: s.name || d.source_id, kind: s.kind || null, category: d.category, severity: d.severity, summary: d.summary, url: d.url, added_lines: d.added_lines, removed_lines: d.removed_lines };
+}
+
+const DEP_NAME = /^@?[a-z0-9][\w.-]*(\/[\w.-]+)?$/i;
+const dedupe = names => [...new Set(names.map(name => String(name).trim()).filter(Boolean))];
+function extractDeps(text) {
+  let parsed;
+  try { parsed = JSON.parse(text); }
+  catch {
+    return dedupe(String(text).split(/[\n,]/).map(token => token.replace(/(?:#|\/\/).*$/, "").trim()
+      .replace(/\s*(?:==|>=|<=|!=|>|<|\^|~|@(?=[\d^~])).*$/, ""))
+      .filter(name => name.length >= 3 && DEP_NAME.test(name))).slice(0, 100);
+  }
+  const names = [];
+  for (const field of ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"]) {
+    if (parsed?.[field] && typeof parsed[field] === "object") names.push(...Object.keys(parsed[field]));
+  }
+  for (const servers of [parsed?.mcpServers, parsed?.servers]) {
+    if (!servers || typeof servers !== "object" || Array.isArray(servers)) continue;
+    for (const [name, server] of Object.entries(servers)) {
+      names.push(name);
+      if (!server || typeof server !== "object") continue;
+      for (const arg of Array.isArray(server.args) ? server.args : []) if (typeof arg === "string" && !arg.startsWith("-") && DEP_NAME.test(arg)) names.push(arg);
+      const command = typeof server.command === "string" ? server.command : "";
+      if (command && !["npx", "node", "uvx", "python", "docker"].includes(command.toLowerCase()) && DEP_NAME.test(command)) names.push(command);
+    }
+  }
+  return dedupe(names).slice(0, 100);
 }
 
 // Fuzzy match: exact package/id hits win; otherwise bigram Dice similarity + token overlap across name, id, npm and pypi package names.
@@ -466,8 +559,8 @@ function wrapExecute(tool, who) {
     try {
       const out = await tool.execute(input, ctx);
       const text = JSON.stringify(out);
-      const preview = out?.message || (out?.count != null ? `${out.count} change${out.count === 1 ? "" : "s"}` : out?.match ? `${out.match.name} · ${out.changes_30d?.length ?? 0} change(s) in 30d · ${out.last_run?.healthy ? "healthy" : "check last run"}` : out?.summary || "ok");
-      logCall({ time: new Date().toLocaleTimeString([], { hour12: false }), name: tool.name, who, input, output: text.length > 20000 ? text.slice(0, 20000) + "…" : text, preview, ms: Math.round(performance.now() - t0), size: text.length });
+      const preview = out?.ok === false ? out.error : out?.message || (out?.count != null ? `${out.count} change${out.count === 1 ? "" : "s"}` : out?.match ? `${out.match.name} · ${out.changes_30d?.length ?? 0} change(s) in 30d · ${out.last_run?.healthy ? "healthy" : "check last run"}` : out?.summary || "ok");
+      logCall({ time: new Date().toLocaleTimeString([], { hour12: false }), name: tool.name, who, input, output: text.length > 20000 ? text.slice(0, 20000) + "…" : text, error: out?.ok === false ? out.error : null, preview, ms: Math.round(performance.now() - t0), size: text.length });
       return out;
     } catch (err) {
       logCall({ time: new Date().toLocaleTimeString([], { hour12: false }), name: tool.name, who, input, error: String(err.message || err), preview: String(err.message || err), ms: Math.round(performance.now() - t0), size: 0 });
@@ -494,7 +587,7 @@ async function registerWebMCP() {
   const st = $("agent-st"), stt = $("agent-st-t"), note = $("agent-note");
   if (!mc || typeof mc.registerTool !== "function") {
     st.className = "st off"; stt.textContent = "not detected";
-    note.innerHTML = `This browser doesn't expose <code>document.modelContext</code>. The four tools below are what an agent gets in Chrome 149+ (origin trial, or <code>chrome://flags/#enable-webmcp-testing</code>) or in ChatGPT's browser. The “▶ sample” buttons call the same functions so you can still see them work.`;
+    note.innerHTML = `This browser doesn't expose <code>document.modelContext</code>. The six tools below are what an agent gets in Chrome 149+ (origin trial, or <code>chrome://flags/#enable-webmcp-testing</code>) or in ChatGPT's browser. The “▶ sample” buttons call the same functions so you can still see them work.`;
     return;
   }
   let n = 0;
