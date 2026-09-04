@@ -2,7 +2,7 @@
 
 **Uploaded cut:** https://youtu.be/z_lRFhLq9eQ — 2:50, real Gemini agent on screen. Rules cap is 3:00. Exact uploaded MP4 SHA-256: `3f942183eed221012ac781e369758754446c664d91009d5cc4dce101dec0e280`.
 
-The capture script asks five fixed read questions and one save request. Gemini invokes `check_dependencies`, `get_diff`, `check_dependency`, `list_sources` and `list_changes`; when the save request omits an email, Gemini asks for confirmation instead of invoking consent-gated `watch_dependencies`. Only the model's wording and the day's data change. Model wait time is cut from the timeline; title/proof cards and captions make the evidence legible.
+In the finalist capture, Gemini answers five fixed read questions and one save request. It invokes `check_dependencies`, `get_diff`, `check_dependency`, `list_sources` and `list_changes`; when the save request omits an email, Gemini asks for confirmation instead of invoking consent-gated `watch_dependencies`. Model wait time is cut from the timeline; title/proof cards and captions make the evidence legible.
 
 ## Shot list
 
