@@ -2,7 +2,7 @@
 
 Live site: **https://agentwire.web.app** (Firebase Hosting, Google Cloud project `agentwire-webmcp`, deployed 2026-09-02)
 Repo: **https://github.com/zaeem-rafiq/agentwire** (public, MIT)
-Video: **https://youtu.be/JBnvbj1fF-U** (unlisted; flip to Public in YouTube Studio if you prefer)
+Video: **https://youtu.be/JBnvbj1fF-U** (1:31; currently *unlisted* — the rules say "publicly posted to YouTube", so flip it to Public in YouTube Studio)
 
 Works in Google Chrome 149+ with WebMCP enabled (`chrome://flags/#enable-webmcp-testing`, or the origin-trial token) and in ChatGPT's browser (tools appear under *Site tools*).
 
@@ -41,6 +41,19 @@ Now: person and agent share one page and one state. The person asks their browse
 - **Backend (unchanged for this challenge):** a Deno edge function on Supabase fetches every watch URL daily via pg_cron, normalizes (npm/PyPI/registry JSON, HTML→text), hashes, multiset-line-diffs against the stored snapshot, classifies, and writes `diffs` rows.
 - **Testing:** `scripts/webmcp-smoke.mjs` is a dependency-free script that launches Chrome with WebMCP enabled and has the *browser* invoke each tool through the DevTools `WebMCP.invokeTool` command — the same channel an agent uses — and prints each request/response. A recorded run is in `docs/webmcp-test-log.md`.
 
+### Prior work vs. work in the submission window
+
+The diff engine (`supabase/functions/run/index.ts`), schema (`supabase/migrations/0001_init.sql`, applied 2026-09-01 per its header comment), the 48-source list and the human web page were built first and were unchanged for the challenge. The WebMCP work is everything that touches an agent: the four tools registered on `document.modelContext`, the UI mirroring, the Agent tools panel with its call log, the `scripts/webmcp-smoke.mjs` proof that has Chrome itself invoke the tools, and the real-agent demo pipeline in `demo/`. All of it is in this repository's dated commit history, which starts 2026-09-02 10:38 CDT (`evidence/git_history.txt`).
+
+### Limitations
+
+- **Severity is heuristic.** "Breaking" is inferred from major version bumps, removed tools or schema fields, and changelog wording; it can over- or under-call. Every change links to the source line so a person can check.
+- **Fuzzy matching returns a confidence, not a guarantee.** `check_dependency` picks the best of 48 sources and lists alternatives; a name that matches nothing returns the watched list instead of a guess.
+- **Email alerts are a subscription, not yet a delivery pipeline.** `watch_dependencies` stores the list (row-level security allows only that insert); sending is manual today.
+- **Coverage is the 48 sources / 119 URLs in `data/sources.json`.** Private or unpublished dependencies are not watched.
+- **WebMCP is pre-release.** The tools register in Chrome 149+ with `chrome://flags/#enable-webmcp-testing` (or an origin-trial token, not registered for this origin) and in ChatGPT's browser; other browsers see the page with the panel explaining what an agent would get.
+- **Three daily runs exist so far** (Sept 1 baseline, Sept 2, Sept 3), so the history judges can query is days, not months.
+
 ---
 
 ## 2. Demo video — what's in the cut (1:31, https://youtu.be/JBnvbj1fF-U)
@@ -66,6 +79,6 @@ How it's real: the chat pane is injected for the recording, but the agent is a l
 1. **Deployed.** https://agentwire.web.app is live on Firebase Hosting. Redeploy after any site change with `firebase deploy --only hosting`.
 2. **Origin trial token (optional but recommended).** Register the production origin at https://developer.chrome.com/origintrials/#/register_trial/4163014905550602241 (WebMCP trial, Chrome 149+), paste the token into the `<meta http-equiv="origin-trial">` slot at the top of `site/index.html`, redeploy. Without it the page still works for judges who enable `chrome://flags/#enable-webmcp-testing` and in ChatGPT's browser.
 3. **Record and upload the demo video** (< 3 min, audio narration above) to YouTube as public/unlisted-public.
-4. **Devpost form** at https://webmcp.devpost.com: title, tagline, the description in §1, the live URL, repo URL, video URL, and screenshots (`docs/agent-panel.png`, `docs/agent-form.png`). Deadline **Sept 3 2026, 1:00 PM PDT**.
+4. **Devpost form** at https://webmcp.devpost.com: title, tagline, the description in §1, the live URL, repo URL, video URL, and screenshots (`docs/agent-panel.png`, `docs/agent-form.png`). Devpost's page shows **Deadline: Sep 4 2026 @ 1:00 AM PDT** (the Official Rules text still says Sep 3 1:00 PM PT); the entry is submitted and stays editable until then.
 5. **GitHub "About" license badge.** GitHub detects `LICENSE` automatically; confirm "MIT license" shows in the repo sidebar (rules require it visible there).
 6. **Optional:** delete the test subscription row (`webmcp-test@example.com`, source `webmcp`) from `dependency_lists` in Supabase — it was inserted by the recorded test run.

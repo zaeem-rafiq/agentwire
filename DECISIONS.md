@@ -1,0 +1,7 @@
+- **19:41 — Write tool not exercised.** `watch_dependencies` inserts a row; the smoke runs were done without `WEBMCP_TEST_EMAIL`, so nothing was written to Supabase tonight.
+- **19:42 — Prior-work section added** to README and SUBMISSION.md because the rules require pre-existing projects to distinguish prior from window work. The backend's only dated marker is the migration header (applied 2026-09-01); no start date was invented. Left as NEEDS-HUMAN to confirm nothing predates Aug 25.
+- **19:44 — Chart built without matplotlib** (not installed; no new dependency): hand-written SVG rendered to PNG by headless Chrome.
+- **19:46 — Video left unlisted.** Flipping it to Public is an externally visible action; listed as NEEDS-HUMAN instead.
+- **19:48 — Makefile and `.env.example` added** as the "one-command install path" and env documentation; they wrap existing commands and add no runtime behavior.
+- **19:50 — Not done:** origin-trial registration (external account action), re-cut of the video, deleting the test subscription row (a delete on the live backend), ChatGPT-browser verification (not available here).
+- **19:52 — Push target.** Judges see `main`; this branch is fast-forwardable onto it, so the final push goes to `origin/main` directly (`git push origin HEAD:main`).
